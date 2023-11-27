@@ -34,13 +34,36 @@
         android:textSize="35dp"
         android:text="Calendar" />
 
-    <Button
-        android:id="@+id/addEventButton"
-        android:layout_gravity="right"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="+"
-        android:textSize="20dp" />
+        android:id="@+id/eventOptions"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/deleteEventButton"
+            android:layout_gravity="left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete" />
+
+        <Button
+            android:id="@+id/editEventButton"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit" />
+
+
+        <Button
+            android:id="@+id/addEventButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="+"
+            android:textSize="20dp" />
+
+    </LinearLayout>
 
     <ListView
         android:id="@+id/eventList"
