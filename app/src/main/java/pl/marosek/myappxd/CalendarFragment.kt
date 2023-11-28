@@ -23,8 +23,7 @@ import java.time.format.DateTimeFormatter
  * Use the [CalendarFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CalendarFragment : Fragment(R.layout.fragment_calendar), DateTransfer {
-
+class CalendarFragment : Fragment(R.layout.fragment_calendar){
     var calendarView : CalendarView? = null
     var textLabel : TextView? = null
     var addEventButton : Button? = null
@@ -95,21 +94,13 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar), DateTransfer {
             refreshList(selectedDate.toString())
         }
 
-        calendarView?.setOnDateChangeListener { view, year, month, dayOfMonth ->
-            //Toast.makeText(context, "Selected date is $dayOfMonth.$month.$year", Toast.LENGTH_SHORT).show()//debugging
-            val month = month + 1 //add 1 to month because it starts from 0
-            selectedDate = "$dayOfMonth-$month-$year"
-            textLabel?.setText("Selected date is $selectedDate")
-            refreshList(selectedDate.toString())
-        }
-
-        fun editEvent() {
+        editEventButton?.setOnClickListener {
             if (selectedEvent != null) {
                 val calendarFragmentEvent = CalendarFragmentEvent()
                 val bundle = Bundle()
-                bundle.putString("eventName", selectedEvent?.eventName)
-                bundle.putString("eventTime", selectedEvent?.eventTime)
-                bundle.putString("eventDate", selectedEvent?.eventDate)
+                val indexOfEvent = eventsList.indexOf(selectedEvent)
+                //PutString is used due to PutInt default value being 0 which is the first element of the list
+                bundle.putString("eventIndex", indexOfEvent.toString())
                 calendarFragmentEvent.arguments = bundle
 
                 val transaction = requireActivity().supportFragmentManager.beginTransaction()
@@ -122,9 +113,17 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar), DateTransfer {
                 Toast.makeText(context, "No event selected", Toast.LENGTH_SHORT).show()
             }
         }
+
+        calendarView?.setOnDateChangeListener { view, year, month, dayOfMonth ->
+            //Toast.makeText(context, "Selected date is $dayOfMonth.$month.$year", Toast.LENGTH_SHORT).show()//debugging
+            val month = month + 1 //add 1 to month because it starts from 0
+            selectedDate = "$dayOfMonth-$month-$year"
+            textLabel?.setText("Selected date is $selectedDate")
+            refreshList(selectedDate.toString())
+        }
     }
 
-    override fun passDate(date: String) {
+    fun passDate(date: String) {
         val bundle = Bundle()
         val calendarFragmentEvent = CalendarFragmentEvent()
 

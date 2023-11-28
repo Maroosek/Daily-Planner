@@ -56,20 +56,26 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
         cancelButton = view.findViewById(R.id.cancelEventButton)
         textLabel?.setText("Selected date is ${arguments?.getString("date")}")
 
-
-        var selectedTime = ""
-        var eventDate = arguments?.getString("date")
-
         var calendar = Calendar.getInstance()
+        var selectedTime = String.format("%02d:%02d", calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE])
+        var eventDate = arguments?.getString("date")
+        var eventIndex = arguments?.getString("eventIndex")
 
-        selectedTime = String.format("%02d:%02d", calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE])
 
 
-        eventTime?.setOnTimeChangedListener { view, hourOfDay, minute ->
+        eventTime?.setOnTimeChangedListener { view, hourOfDay, minute -> // getting time from time picker
             selectedTime = String.format("%02d:%02d", hourOfDay, minute)
         }
 
-
+        if (eventIndex != null) { //if event is being edited
+            var index = eventIndex.toInt()
+            eventTitle!!.setText(eventsList[index].eventName)
+            eventTime!!.hour = eventsList[index].eventTime.split(":")[0].toInt()
+            eventTime!!.minute = eventsList[index].eventTime.split(":")[1].toInt()
+            textLabel?.setText("Selected date is ${eventsList[index].eventDate}")
+            eventDate = eventsList[index].eventDate
+            //textLabel?.setText("Selected date is $eventIndex")
+        }
 
         submitButton?.setOnClickListener {
             val calendarFragment = CalendarFragment()
@@ -78,16 +84,15 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
             transaction.commit()
             val eventName = eventTitle?.text.toString() //works
             val eventDate = eventDate.toString()
-
+            if (eventIndex != null) {
+                eventsList.removeAt(eventIndex.toInt())
+            }
             addEvent(eventName, selectedTime, eventDate)
-            //val Event = Event(eventName, selectedTime, eventDate) //debugging
-
-
             Toast.makeText(context, "Event Added", Toast.LENGTH_SHORT).show()
+
+            //val Event = Event(eventName, selectedTime, eventDate) //debugging
 //            Toast.makeText(context, "Event Submited, $eventName, $selectedTime," +
 //                    " $eventDate", Toast.LENGTH_SHORT).show()//debugging
-
-
         }
 
         cancelButton?.setOnClickListener {
