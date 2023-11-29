@@ -3,25 +3,17 @@ package pl.marosek.myappxd
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context.ALARM_SERVICE
-import android.content.Intent
 import android.os.Bundle
-import android.text.style.ClickableSpan
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.CheckBox
-import android.widget.EditText
 import android.widget.ListView
 import android.widget.TextView
-import android.widget.TimePicker
 import android.widget.Toast
-import android.widget.ToggleButton
-import androidx.core.content.getSystemService
-import java.util.Calendar
-import kotlin.random.Random
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -35,7 +27,9 @@ class ClockFragment : Fragment(R.layout.fragment_clock) {
     //var alarmTimePicker : TimePicker? = null
     var pendingIntent : PendingIntent? = null
     var alarmManager : AlarmManager? = null
-    var newAlarmButton : Button? = null
+    var addAlarmButton : Button? = null
+    var deleteAlarmButton : Button? = null
+    var editAlarmButton : Button? = null
     var textLabel : TextView? = null
     var alarmList : ListView? = null
 
@@ -51,20 +45,35 @@ class ClockFragment : Fragment(R.layout.fragment_clock) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        newAlarmButton = view.findViewById(R.id.newAlarmButton)
+        addAlarmButton = view.findViewById(R.id.newAlarmButton)
+        deleteAlarmButton = view.findViewById(R.id.deleteAlarmButton)
+        editAlarmButton = view.findViewById(R.id.editAlarmButton)
+        textLabel = view.findViewById(R.id.debug)
+        alarmList = view.findViewById(R.id.alarmList)
+        var selectedAlarm: Alarm? = null
+
+
+        alarmList?.onItemClickListener = object : AdapterView.OnItemClickListener {
+            override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                //Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Selected" +alarmsList[position], Toast.LENGTH_SHORT).show()
+                selectedAlarm = null
+                selectedAlarm = alarmsList[position]
+            }
+        }
+
         alarmManager = context?.getSystemService(ALARM_SERVICE) as AlarmManager
         //alarmTimePicker!!.setIs24HourView(true)
 //        val toggleBtn = view.findViewById<ToggleButton>(R.id.toggleBtn) // Tutaj tez chyba do wywalenia
 //        toggleBtn.setOnCheckedChangeListener { toggleBtn, b -> onToggleClicked(view) }
 
-        textLabel = view.findViewById(R.id.debug)
-        alarmList = view.findViewById(R.id.alarmList)
+
 
         var adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, alarmsList)
         alarmList?.adapter = adapter
 
 
-        newAlarmButton?.setOnClickListener {
+        addAlarmButton?.setOnClickListener {
 
             val clockFragmentAlarm = ClockFragmentAlarm()
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
@@ -73,6 +82,39 @@ class ClockFragment : Fragment(R.layout.fragment_clock) {
             transaction.commit()
             refreshList()
 
+        }
+
+        deleteAlarmButton?.setOnClickListener {
+            if (selectedAlarm != null) {
+                alarmsList.remove(selectedAlarm)
+                Toast.makeText(context, "Event deleted", Toast.LENGTH_SHORT).show()
+            }
+            else
+            {
+                Toast.makeText(context, "No event selected", Toast.LENGTH_SHORT).show()
+            }
+
+            refreshList()
+        }
+
+        editAlarmButton?.setOnClickListener {
+            if (selectedAlarm != null) {
+                val clockFragmentAlarm = ClockFragmentAlarm()
+                val bundle = Bundle()
+                val indexOfAlarm = alarmsList.indexOf(selectedAlarm)
+                //PutString is used due to PutInt default value being 0 which is the first element of the list
+                bundle.putString("alarmIndex", indexOfAlarm.toString())
+                clockFragmentAlarm.arguments = bundle
+
+                val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.flFragment, clockFragmentAlarm)
+                transaction.addToBackStack(null)
+                transaction.commit()
+            }
+            else
+            {
+                Toast.makeText(context, "No event selected", Toast.LENGTH_SHORT).show()
+            }
         }
 
 

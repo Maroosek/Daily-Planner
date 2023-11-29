@@ -69,7 +69,22 @@ class ClockFragmentAlarm : Fragment(R.layout.fragment_clock_event) {
         cancelAlarm = view.findViewById(R.id.cancelAlarmButton)
 
         textLabel = view.findViewById(R.id.debug)
+        var alarmIndex = arguments?.getString("alarmIndex")
 
+        if (alarmIndex != null) { //if alarm is being edited
+            var alarm = alarmsList[alarmIndex.toInt()]
+            title?.setText(alarm.alarmTitle)
+            var time = alarm.alarmTime.split(":")
+            alarmTimePicker?.hour = time[0].toInt()
+            alarmTimePicker?.minute = time[1].toInt()
+            if(alarm.monday == true) mon?.isChecked = true
+            if(alarm.tuesday == true) tue?.isChecked = true
+            if(alarm.wednesday == true) wed?.isChecked = true
+            if(alarm.thursday == true) thu?.isChecked = true
+            if(alarm.friday == true) fri?.isChecked = true
+            if(alarm.saturday == true) sat?.isChecked = true
+            if(alarm.sunday == true) sun?.isChecked = true
+        }
 
         addAlarm?.setOnClickListener {
             val clockFragment = ClockFragment()

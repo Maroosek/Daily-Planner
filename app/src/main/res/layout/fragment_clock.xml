@@ -31,13 +31,33 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/newAlarmButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="+"
-        android:layout_gravity="right"
-        android:layout_margin="20dp" />
+        android:id="@+id/alarmSummanary"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/deleteAlarmButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete" />
+
+        <Button
+            android:id="@+id/editAlarmButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit" />
+
+        <Button
+            android:id="@+id/newAlarmButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:layout_gravity="right"
+            android:layout_margin="20dp" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/debug"
