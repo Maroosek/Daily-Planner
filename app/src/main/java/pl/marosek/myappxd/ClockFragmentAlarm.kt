@@ -55,7 +55,7 @@ class ClockFragmentAlarm : Fragment(R.layout.fragment_clock_event) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        alarmTimePicker = view.findViewById(R.id.timePicker)
+        alarmTimePicker = view.findViewById(R.id.alarmTimePicker)
         alarmTimePicker!!.setIs24HourView(true)
         mon = view.findViewById(R.id.alarmCheckMon)
         tue = view.findViewById(R.id.alarmCheckTue)
@@ -68,15 +68,28 @@ class ClockFragmentAlarm : Fragment(R.layout.fragment_clock_event) {
         addAlarm = view.findViewById(R.id.addAlarmButton)
         cancelAlarm = view.findViewById(R.id.cancelAlarmButton)
 
+        var alarmID = Random.nextInt(0, 1000000)
+        var alarmTime = ""
+        var active = true
+
         textLabel = view.findViewById(R.id.debug)
         var alarmIndex = arguments?.getString("alarmIndex")
+
+        var calendar = Calendar.getInstance()
+        alarmTime = String.format("%02d:%02d", calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE])
+        alarmTimePicker?.setOnTimeChangedListener { view, hourOfDay, minute ->
+            alarmTime = String.format("%02d:%02d", hourOfDay, minute)
+        }
 
         if (alarmIndex != null) { //if alarm is being edited
             var alarm = alarmsList[alarmIndex.toInt()]
             title?.setText(alarm.alarmTitle)
+            alarmID = alarm.alarmID
+            active = alarm.isActive
             var time = alarm.alarmTime.split(":")
             alarmTimePicker?.hour = time[0].toInt()
             alarmTimePicker?.minute = time[1].toInt()
+            alarmTime = alarm.alarmTime
             if(alarm.monday == true) mon?.isChecked = true
             if(alarm.tuesday == true) tue?.isChecked = true
             if(alarm.wednesday == true) wed?.isChecked = true
@@ -93,14 +106,8 @@ class ClockFragmentAlarm : Fragment(R.layout.fragment_clock_event) {
             transaction.commit()
             val alarmName = title?.text.toString() //works
 
-            var alarmTime = ""
-            var calendar = Calendar.getInstance()
-            alarmTime = String.format("%02d:%02d", calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE])
+            //var alarmID = Random.nextInt(0, 1000000)
 
-            alarmTimePicker?.setOnTimeChangedListener { view, hourOfDay, minute ->
-                alarmTime = String.format("%02d:%02d", hourOfDay, minute)
-            }
-            var active = true
             var mon = mon?.isChecked
             var tue = tue?.isChecked
             var wed = wed?.isChecked
@@ -109,9 +116,13 @@ class ClockFragmentAlarm : Fragment(R.layout.fragment_clock_event) {
             var sat = sat?.isChecked
             var sun = sun?.isChecked
 
+            if (alarmIndex != null) {
+                alarmsList.removeAt(alarmIndex.toInt())
+            }
+
             //textLabel?.setText("$mon $tue $wed $thu $fri $sat $sun") //debugging
             //val addedAlarm = Alarm(alarmTime, alarmName, active, mon, tue, wed, thu, fri, sat, sun) //debugging
-            addAlarm(alarmTime, alarmName, active, mon, tue, wed, thu, fri, sat, sun)
+            addAlarm(alarmTime, alarmName, alarmID, active, mon, tue, wed, thu, fri, sat, sun)
 
             Toast.makeText(context, "Alarm Added", Toast.LENGTH_SHORT).show()
         }

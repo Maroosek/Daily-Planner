@@ -80,7 +80,7 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar){
                 passDate(currentDate)
             }
         }
-
+        //TODO make buttons appear and disappear when event is selected or not
         deleteEventButton?.setOnClickListener {
             if (selectedEvent != null) {
                 eventsList.remove(selectedEvent)

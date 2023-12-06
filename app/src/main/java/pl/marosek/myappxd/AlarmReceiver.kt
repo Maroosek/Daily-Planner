@@ -22,13 +22,13 @@ class AlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
 
-
+        //Starts the vibration and toast
         val vibration = context!!.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         vibration.vibrate(4000)
         Toast.makeText(context, "Aaaaaaaaaaaaa",Toast.LENGTH_SHORT).show()
-
+        //Sets default alarm sound
         var alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-
+        //If there is no default alarm sound, sets default notification sound
         if (alarmSound == null){
             alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         }
@@ -57,8 +57,9 @@ class AlarmReceiver : BroadcastReceiver() {
             //}
         }
 
-
     }
+
+
 
 //    fun alarmisToday(intent : Intent) : Boolean{
 //        val calendar = java.util.Calendar.getInstance()
