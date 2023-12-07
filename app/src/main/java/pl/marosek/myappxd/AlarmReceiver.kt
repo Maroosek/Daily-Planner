@@ -9,15 +9,15 @@ import android.widget.Toast
 import android.widget.ToggleButton
 
 class AlarmReceiver : BroadcastReceiver() {
-    val MONDAY = "MONDAY"
-    val TUESDAY = "TUESDAY"
-    val WEDNESDAY = "WEDNESDAY"
-    val THURSDAY = "THURSDAY"
-    val FRIDAY = "FRIDAY"
-    val SATURDAY = "SATURDAY"
-    val SUNDAY = "SUNDAY"
-    val REPEATING = "REPEATING"
-    val TITLE = "TITLE"
+//    val MONDAY = "MONDAY"
+//    val TUESDAY = "TUESDAY"
+//    val WEDNESDAY = "WEDNESDAY"
+//    val THURSDAY = "THURSDAY"
+//    val FRIDAY = "FRIDAY"
+//    val SATURDAY = "SATURDAY"
+//    val SUNDAY = "SUNDAY"
+//    val REPEATING = "REPEATING"
+//    val TITLE = "TITLE"
 
 
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -35,6 +35,13 @@ class AlarmReceiver : BroadcastReceiver() {
 
         val ringtone = RingtoneManager.getRingtone(context, alarmSound)
         ringtone.play()
+        //code keeps crashing here
+//        val homeFragment = HomeFragment()
+//        //val transaction = requireActivity().supportFragmentManager.beginTransaction()
+//        val transaction = (context as MainActivity).supportFragmentManager.beginTransaction()
+//        transaction.replace(R.id.flFragment, homeFragment)
+//        transaction.addToBackStack(null)
+//        transaction.commitAllowingStateLoss()
 
         //val toggleButton : ToggleButton = findViewById<ToggleButton>(R.id.toggleBtn).isChecked)
 
@@ -46,17 +53,16 @@ class AlarmReceiver : BroadcastReceiver() {
             Toast.makeText(context, "Alarm Reboot",Toast.LENGTH_SHORT).show()
             //startRescheduleAlarmsService(context)
         }
-        else {
-            Toast.makeText(context, "Alarm Received",Toast.LENGTH_SHORT).show() // Ten to sam nie wiem o co chodzi
-            //ringtone.stop()
-            if (intent!!.getBooleanExtra(REPEATING, false)){
-                //startAlarmService(context, intent)
-            }
-            //else if (alarmisToday(intent)){
-                //startAlarmService(context, intent)
-            //}
-        }
-
+//        else {
+//            Toast.makeText(context, "Alarm Received",Toast.LENGTH_SHORT).show() // Ten to sam nie wiem o co chodzi
+//            //ringtone.stop()
+//            if (intent!!.getBooleanExtra(REPEATING, false)){
+//                //startAlarmService(context, intent)
+//            }
+//            //else if (alarmisToday(intent)){
+//                //startAlarmService(context, intent)
+//            //}
+//        }
     }
 
 

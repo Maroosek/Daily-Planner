@@ -70,7 +70,7 @@ class ClockFragmentAlarm : Fragment(R.layout.fragment_clock_event) {
 
         var alarmID = Random.nextInt(0, 1000000)
         var alarmTime = ""
-        var active = true
+        var active = false
 
         textLabel = view.findViewById(R.id.debug)
         var alarmIndex = arguments?.getString("alarmIndex")

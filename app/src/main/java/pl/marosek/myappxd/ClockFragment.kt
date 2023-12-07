@@ -97,11 +97,10 @@ class ClockFragment : Fragment(R.layout.fragment_clock) {
             //getApplicationContext().stopService(Intent(getApplicationContext(), AlarmService::class.java))
             //stop intent from firing
             if (selectedAlarm != null) {
-                val intent = Intent(context, AlarmReceiver::class.java)
-                val pendingIntent =
-                    PendingIntent.getBroadcast(context, selectedAlarm!!.alarmID, intent, PendingIntent.FLAG_IMMUTABLE)
                 //val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-                alarmManager?.cancel(pendingIntent)
+                alarmManager?.cancel(PendingIntent.getBroadcast(context, selectedAlarm!!.alarmID, Intent(context, AlarmReceiver::class.java), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
+                //AlarmReceiver().stopSound(requireContext())
+
             }else
             {
                 Toast.makeText(context, "No event selected", Toast.LENGTH_SHORT).show()
@@ -115,7 +114,7 @@ class ClockFragment : Fragment(R.layout.fragment_clock) {
                     //toggleButton?.setChecked(false)
                     //Toast.makeText(context, "Alarm wstrzymano", Toast.LENGTH_SHORT).show()
                     if (pendingIntent != null) {
-                        alarmManager?.cancel(pendingIntent)
+                        alarmManager?.cancel(PendingIntent.getBroadcast(context, selectedAlarm!!.alarmID, Intent(context, AlarmReceiver::class.java), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
                     }
                     //alarmManager?.cancel(pendingIntent)
 
@@ -123,13 +122,16 @@ class ClockFragment : Fragment(R.layout.fragment_clock) {
                 } else if (toggleButton?.isChecked == false){
                     //toggleButton?.setChecked(true)
                     //Toast.makeText(context,"Alarm ustawiono",Toast.LENGTH_SHORT).show()
+
                     var calendar = Calendar.getInstance()
                     calendar[Calendar.HOUR_OF_DAY] = selectedAlarm!!.alarmTime.split(":")[0].toInt()
                     calendar[Calendar.MINUTE] = selectedAlarm!!.alarmTime.split(":")[1].toInt()
                     val intent = Intent(context,AlarmReceiver::class.java)
-                    pendingIntent = PendingIntent.getBroadcast(context, selectedAlarm!!.alarmID, intent, PendingIntent.FLAG_MUTABLE)
+                    pendingIntent = PendingIntent.getBroadcast(context, selectedAlarm!!.alarmID, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                     alarmManager!!.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
                     //alarmManager!!.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, 1000, pendingIntent)
+                    //alarmManager!!.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+
                     selectedAlarm?.isActive = true
                 }
             }
