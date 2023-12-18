@@ -1,23 +1,19 @@
 package pl.marosek.myappxd
 
 import android.app.AlarmManager
-import android.content.Context
+import android.app.PendingIntent
+import android.content.Context.ALARM_SERVICE
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.CalendarView
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.TimePicker
 import android.widget.Toast
-import android.widget.ToggleButton
-import androidx.core.os.bundleOf
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
 // TODO: Rename parameter arguments, choose names that match
@@ -75,6 +71,7 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
             textLabel?.setText("Selected date is ${eventsList[index].eventDate}")
             eventDate = eventsList[index].eventDate
             //textLabel?.setText("Selected date is $eventIndex")
+            cancelEvent(index)
         }
 
         submitButton?.setOnClickListener {
@@ -88,6 +85,9 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
                 eventsList.removeAt(eventIndex.toInt())
             }
             addEvent(eventName, selectedTime, eventDate)
+            var event = Event(eventName, selectedTime, eventDate)
+            val indexOfEvent = eventsList.indexOf(event)
+            scheduleEvent(indexOfEvent)
             Toast.makeText(context, "Event Added", Toast.LENGTH_SHORT).show()
 
             //val Event = Event(eventName, selectedTime, eventDate) //debugging
@@ -96,13 +96,37 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
         }
 
         cancelButton?.setOnClickListener {
-            val calendarFragment = CalendarFragment()
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.flFragment, calendarFragment)
-            transaction.commit()
-            Toast.makeText(context, "Event Canceled", Toast.LENGTH_SHORT).show()
+            cancelEvent()
         }
 
+    }
+    fun cancelEvent(){
+        val calendarFragment = CalendarFragment()
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.flFragment, calendarFragment)
+        transaction.commit()
+        Toast.makeText(context, "Event Canceled", Toast.LENGTH_SHORT).show()
+    }
+    fun scheduleEvent(indexOfEvent: Int) {
+        var calendar = Calendar.getInstance()
+        calendar[Calendar.HOUR_OF_DAY] = eventsList[indexOfEvent].eventTime.split(":")[0].toInt()
+        calendar[Calendar.MINUTE] = eventsList[indexOfEvent].eventTime.split(":")[1].toInt()
+        calendar[Calendar.DAY_OF_MONTH] = eventsList[indexOfEvent].eventDate.split("-")[0].toInt()
+        calendar[Calendar.MONTH] = eventsList[indexOfEvent].eventDate.split("-")[1].toInt() - 1
+        calendar[Calendar.YEAR] = eventsList[indexOfEvent].eventDate.split("-")[2].toInt()
+
+        val alarmManager = requireActivity().getSystemService(ALARM_SERVICE) as AlarmManager
+        val intent = Intent(requireContext(), AlarmReceiver::class.java)
+        intent.putExtra("source", "calendarFragment")
+        intent.putExtra("eventIndex", indexOfEvent.toString())
+        val pendingIntent = PendingIntent.getBroadcast(requireContext(), indexOfEvent, intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+    }
+    fun cancelEvent(indexOfEvent: Int) {
+        val alarmManager = requireActivity().getSystemService(ALARM_SERVICE) as AlarmManager
+        val intent = Intent(requireContext(), AlarmReceiver::class.java)
+        alarmManager.cancel(PendingIntent.getBroadcast(requireContext(), indexOfEvent, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT))
     }
 
 }

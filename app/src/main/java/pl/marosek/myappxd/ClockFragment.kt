@@ -127,6 +127,8 @@ class ClockFragment : Fragment(R.layout.fragment_clock) {
                     calendar[Calendar.HOUR_OF_DAY] = selectedAlarm!!.alarmTime.split(":")[0].toInt()
                     calendar[Calendar.MINUTE] = selectedAlarm!!.alarmTime.split(":")[1].toInt()
                     val intent = Intent(context,AlarmReceiver::class.java)
+                    intent.putExtra("alarmName", selectedAlarm!!.alarmTitle)
+                    intent.putExtra("source", "clockFragment")
                     pendingIntent = PendingIntent.getBroadcast(context, selectedAlarm!!.alarmID, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                     alarmManager!!.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
                     //alarmManager!!.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, 1000, pendingIntent)

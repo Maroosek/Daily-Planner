@@ -6,7 +6,8 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Vibrator
 import android.widget.Toast
-import android.widget.ToggleButton
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 
 class AlarmReceiver : BroadcastReceiver() {
 //    val MONDAY = "MONDAY"
@@ -21,20 +22,22 @@ class AlarmReceiver : BroadcastReceiver() {
 
 
     override fun onReceive(context: Context?, intent: Intent?) {
+    //Checkin from which fragment the alarm was set
+    var source = intent?.getStringExtra("source")
 
-        //Starts the vibration and toast
-        val vibration = context!!.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        vibration.vibrate(4000)
-        Toast.makeText(context, "Aaaaaaaaaaaaa",Toast.LENGTH_SHORT).show()
+    if(source == "clockFragment") {
+        Toast.makeText(context, "WAKE UP!!!", Toast.LENGTH_SHORT).show()
         //Sets default alarm sound
         var alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         //If there is no default alarm sound, sets default notification sound
-        if (alarmSound == null){
+        if (alarmSound == null) {
             alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         }
-
         val ringtone = RingtoneManager.getRingtone(context, alarmSound)
         ringtone.play()
+        //Starts the vibration and toast
+        val vibration = context!!.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        vibration.vibrate(4000)
         //code keeps crashing here
 //        val homeFragment = HomeFragment()
 //        //val transaction = requireActivity().supportFragmentManager.beginTransaction()
@@ -43,16 +46,34 @@ class AlarmReceiver : BroadcastReceiver() {
 //        transaction.addToBackStack(null)
 //        transaction.commitAllowingStateLoss()
 
-        //val toggleButton : ToggleButton = findViewById<ToggleButton>(R.id.toggleBtn).isChecked)
-
-        //if (toggleButton.isChecked){
-        //   ringtone.stop()
-        //}
-
-        if (Intent.ACTION_BOOT_COMPLETED.equals(intent?.action)){ // Podobno po resecie ma się pojawić, nie ma co to trzymać
-            Toast.makeText(context, "Alarm Reboot",Toast.LENGTH_SHORT).show()
+        if (Intent.ACTION_BOOT_COMPLETED.equals(intent?.action)) { // Podobno po resecie ma się pojawić, nie ma co to trzymać
+            Toast.makeText(context, "Alarm Reboot", Toast.LENGTH_SHORT).show()
             //startRescheduleAlarmsService(context)
         }
+    }
+    if (source == "calendarFragment"){
+        Toast.makeText(context, "AAAAAAAAAAAAAAAAAAAAAAAAA", Toast.LENGTH_SHORT).show()
+        var alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+        val ringtone = RingtoneManager.getRingtone(context, alarmSound)
+        ringtone.play()
+    }
+//    if (intent?.component?.className.equals("pl.marosek.myappxd.CalendarFragment")) {
+//        Toast.makeText(context, "WAKE UP!!!", Toast.LENGTH_SHORT).show()
+//    }
+        //code keeps crashing here
+
+//        val builder = NotificationCompat.builder(context, "notifyAlarm")
+//            .setSmallIcon(R.drawable.ic_launcher_foreground)
+//            .setContentTitle("Alarm")
+//            .setContentText("WAKE UP!!!")
+//            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//            //.setSound(alarmSound)
+//            .setAutoCancel(true)
+//
+//        val notificationManager = NotificationManagerCompat.from(context)
+//        notificationManager.notify(200, builder.build())
+
+
 //        else {
 //            Toast.makeText(context, "Alarm Received",Toast.LENGTH_SHORT).show() // Ten to sam nie wiem o co chodzi
 //            //ringtone.stop()

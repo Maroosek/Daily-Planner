@@ -67,8 +67,8 @@ class ClockFragmentAlarm : Fragment(R.layout.fragment_clock_event) {
         title = view.findViewById((R.id.alarmTitle))
         addAlarm = view.findViewById(R.id.addAlarmButton)
         cancelAlarm = view.findViewById(R.id.cancelAlarmButton)
-
-        var alarmID = Random.nextInt(0, 1000000)
+        //AlarmID is random to avoid collision with callender intents
+        var alarmID = Random.nextInt(1000000, 2000000)
         var alarmTime = ""
         var active = false
 
@@ -128,12 +128,15 @@ class ClockFragmentAlarm : Fragment(R.layout.fragment_clock_event) {
         }
 
         cancelAlarm?.setOnClickListener {
-            val clockFragment = ClockFragment()
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.flFragment, clockFragment)
-            transaction.commit()
-            Toast.makeText(context, "Alarm Canceled!", Toast.LENGTH_SHORT).show()
+            cancelAlarm()
         }
+    }
+    fun cancelAlarm(){
+        val clockFragment = ClockFragment()
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.flFragment, clockFragment)
+        transaction.commit()
+        Toast.makeText(context, "Alarm Canceled!", Toast.LENGTH_SHORT).show()
     }
 
 }

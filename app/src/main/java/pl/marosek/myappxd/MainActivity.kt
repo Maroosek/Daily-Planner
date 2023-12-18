@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 
 
@@ -26,36 +27,31 @@ class MainActivity : AppCompatActivity() {
         val clockFragment = ClockFragment()
         val calendarFragment = CalendarFragment()
 
-        getArraysFromSharedPref() //getting arrays from shared preferences when opening app
+        //getting arrays from shared preferences when opening app
+        getArraysFromSharedPref()
 
         //Starting fragment
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.flFragment, homeFragment)
-            commit()//commit changes, without it nothing will happen
-        }
+        setFragment(homeFragment)
+
         //Fragment buttons
         btnHomeFragment.setOnClickListener {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.flFragment, homeFragment)
-                addToBackStack(null)//allows to go back to previous fragment
-                commit()
-            }
+            setFragment(homeFragment)
         }
 
         btnClockFragment.setOnClickListener {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.flFragment, clockFragment)
-                addToBackStack(null)
-                commit()
-            }
+            setFragment(clockFragment)
         }
 
         btnCalendarFragment.setOnClickListener {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.flFragment, calendarFragment)
-                addToBackStack(null)
-                commit()
-            }
+            setFragment(calendarFragment)
+        }
+    }
+    //Function for setting fragment
+    fun setFragment(fragment: Fragment){
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.flFragment, fragment)
+            addToBackStack(null)
+            commit()
         }
     }
     //Saving Arrays to Shared Preferences using Gson
@@ -101,11 +97,13 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         Log.d("LIFECYCLE","onPause") //debugging
+        //saveArraysToSharedPref()
     }
 
     override fun onStop() {
         super.onStop()
         Log.d("LIFECYCLE","onStop") //debugging
+        //saveArraysToSharedPref()
     }
 
     override fun onRestart() {

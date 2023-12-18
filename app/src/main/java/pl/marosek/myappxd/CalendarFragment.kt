@@ -1,5 +1,9 @@
 package pl.marosek.myappxd
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -53,21 +57,35 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar){
         deleteEventButton = view.findViewById(R.id.deleteEventButton)
         editEventButton = view.findViewById(R.id.editEventButton)
         eventListView = view.findViewById(R.id.eventList)
-        textLabel?.visibility = View.GONE //debugging
-        //textLabel?.setText("Selected date is $currentDate") //debugging
+        //textLabel?.visibility = View.GONE //debugging
+        textLabel?.setText("Selected date is $currentDate") //debugging
 
         var today = eventsList.filter { it.eventDate == currentDate }
         var adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1,
             today.map { it.eventTime+ " " +it.eventName })
         eventListView?.adapter = adapter
 
-        eventListView?.onItemClickListener = object : AdapterView.OnItemClickListener {
-            override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                //Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show()
-                Toast.makeText(context, "Selected" +eventsList[position], Toast.LENGTH_SHORT).show()
-                selectedEvent = null
-                selectedEvent = eventsList[position]
+//        eventListView?.onItemClickListener = object : AdapterView.OnItemClickListener {
+//            override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+//                //Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show()
+//                val selected = eventListView?.getItemAtPosition(position).toString()
+//                for (event in eventsList) {
+//                    if (event.eventName + " " + event.eventTime == selected) {
+//                        selectedEvent = event
+//                    }
+//                }
+//                Toast.makeText(context, "Selected" +selectedEvent, Toast.LENGTH_SHORT).show()
+//            }
+//        }
+        eventListView?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            //Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show()
+            val selected = eventListView?.getItemAtPosition(position).toString()
+            for (event in eventsList) {
+                if (event.eventName + " " + event.eventTime == selected) {
+                    selectedEvent = event
+                }
             }
+            Toast.makeText(context, "Selected" +selectedEvent, Toast.LENGTH_SHORT).show()
         }
 
         addEventButton?.setOnClickListener {
@@ -84,6 +102,10 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar){
         deleteEventButton?.setOnClickListener {
             if (selectedEvent != null) {
                 eventsList.remove(selectedEvent)
+                var indexOfEvent = eventsList.indexOf(selectedEvent)
+                val alarmManager = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                val intent = Intent(requireContext(), AlarmReceiver::class.java)
+                alarmManager.cancel(PendingIntent.getBroadcast(requireContext(), indexOfEvent, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT))
                 Toast.makeText(context, "Event deleted", Toast.LENGTH_SHORT).show()
             }
             else
