@@ -122,13 +122,20 @@ class ClockFragment : Fragment(R.layout.fragment_clock) {
                 } else if (toggleButton?.isChecked == false){
                     //toggleButton?.setChecked(true)
                     //Toast.makeText(context,"Alarm ustawiono",Toast.LENGTH_SHORT).show()
-
+                    //TODO Variable days of week start with monday, in that way alarmID - 7 is monday, alarmID - 6 is tuesday etc.
+                    //TODO In order to make it work, need to check for true/false in each day of week
+                    //TODO in for loop and add 1 to alarmID for each true day of week
+                    //TODO Then make it AlarmID - 7 is for monday, alarmID - 6 is for tuesday etc.
+                    //TODO Switchcase which sets alarm for each day of week with different alarmID and different pendingIntent
+                    //TODO Intent should be on repeat with week interval
+                    //TODO same for cancellation to get correct intent ID
                     var calendar = Calendar.getInstance()
                     calendar[Calendar.HOUR_OF_DAY] = selectedAlarm!!.alarmTime.split(":")[0].toInt()
                     calendar[Calendar.MINUTE] = selectedAlarm!!.alarmTime.split(":")[1].toInt()
                     val intent = Intent(context,AlarmReceiver::class.java)
                     intent.putExtra("alarmName", selectedAlarm!!.alarmTitle)
                     intent.putExtra("source", "clockFragment")
+                    intent.putExtra("alarmID", selectedAlarm!!.alarmID)
                     pendingIntent = PendingIntent.getBroadcast(context, selectedAlarm!!.alarmID, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                     alarmManager!!.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
                     //alarmManager!!.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, 1000, pendingIntent)

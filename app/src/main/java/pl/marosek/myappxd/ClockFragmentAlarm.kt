@@ -68,9 +68,10 @@ class ClockFragmentAlarm : Fragment(R.layout.fragment_clock_event) {
         addAlarm = view.findViewById(R.id.addAlarmButton)
         cancelAlarm = view.findViewById(R.id.cancelAlarmButton)
         //AlarmID is random to avoid collision with callender intents
-        var alarmID = Random.nextInt(1000000, 2000000)
+        var alarmID = Random.nextInt(1, 100000)
         var alarmTime = ""
         var active = false
+        alarmID *= 8
 
         textLabel = view.findViewById(R.id.debug)
         var alarmIndex = arguments?.getString("alarmIndex")

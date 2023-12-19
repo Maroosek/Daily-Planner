@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Daily Planner</string>
     <string name="button_text_first">First</string>
     <string name="button_text_second">Second</string>
     <string name="TestViewXD">TestText</string>

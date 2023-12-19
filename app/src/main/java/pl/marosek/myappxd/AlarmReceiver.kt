@@ -1,5 +1,7 @@
 package pl.marosek.myappxd
 
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -10,22 +12,20 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 
 class AlarmReceiver : BroadcastReceiver() {
-//    val MONDAY = "MONDAY"
-//    val TUESDAY = "TUESDAY"
-//    val WEDNESDAY = "WEDNESDAY"
-//    val THURSDAY = "THURSDAY"
-//    val FRIDAY = "FRIDAY"
-//    val SATURDAY = "SATURDAY"
-//    val SUNDAY = "SUNDAY"
-//    val REPEATING = "REPEATING"
-//    val TITLE = "TITLE"
-
+    var notificationID = 1
+    val notificationChannelID = "pl.marosek.myappxd"
+    val notifName = "TestName"
+    var notifDescription = "TestDescription"
 
     override fun onReceive(context: Context?, intent: Intent?) {
     //Checkin from which fragment the alarm was set
     var source = intent?.getStringExtra("source")
+    var title: String? = null
 
     if(source == "clockFragment") {
+        title = "Alarm"
+        notifDescription = intent?.getStringExtra("alarmName")!!
+        //notificationID = intent?.getIntExtra("alarmID", 1)!!
         Toast.makeText(context, "WAKE UP!!!", Toast.LENGTH_SHORT).show()
         //Sets default alarm sound
         var alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
@@ -45,74 +45,30 @@ class AlarmReceiver : BroadcastReceiver() {
 //        transaction.replace(R.id.flFragment, homeFragment)
 //        transaction.addToBackStack(null)
 //        transaction.commitAllowingStateLoss()
-
-        if (Intent.ACTION_BOOT_COMPLETED.equals(intent?.action)) { // Podobno po resecie ma się pojawić, nie ma co to trzymać
-            Toast.makeText(context, "Alarm Reboot", Toast.LENGTH_SHORT).show()
-            //startRescheduleAlarmsService(context)
-        }
     }
     if (source == "calendarFragment"){
+        title = "Calendar"
+        notifDescription = intent?.getStringExtra("eventName")!!
+        notificationID = intent?.getIntExtra("eventID", 1)!!
         Toast.makeText(context, "AAAAAAAAAAAAAAAAAAAAAAAAA", Toast.LENGTH_SHORT).show()
         var alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         val ringtone = RingtoneManager.getRingtone(context, alarmSound)
         ringtone.play()
+
+        val manager = context!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notification = NotificationCompat.Builder(context, notificationChannelID)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle(title)
+            .setContentText(notifDescription)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            //.setContentIntent(PendingIntent.getBroadcast(context, notificationID, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT))
+            //.setSound(alarmSound)
+            //.setAutoCancel(true)
+            .build()
+
+        //TODO Need to re-check about norify id
+        manager.notify(1, notification)
+        }
+
     }
-//    if (intent?.component?.className.equals("pl.marosek.myappxd.CalendarFragment")) {
-//        Toast.makeText(context, "WAKE UP!!!", Toast.LENGTH_SHORT).show()
-//    }
-        //code keeps crashing here
-
-//        val builder = NotificationCompat.builder(context, "notifyAlarm")
-//            .setSmallIcon(R.drawable.ic_launcher_foreground)
-//            .setContentTitle("Alarm")
-//            .setContentText("WAKE UP!!!")
-//            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-//            //.setSound(alarmSound)
-//            .setAutoCancel(true)
-//
-//        val notificationManager = NotificationManagerCompat.from(context)
-//        notificationManager.notify(200, builder.build())
-
-
-//        else {
-//            Toast.makeText(context, "Alarm Received",Toast.LENGTH_SHORT).show() // Ten to sam nie wiem o co chodzi
-//            //ringtone.stop()
-//            if (intent!!.getBooleanExtra(REPEATING, false)){
-//                //startAlarmService(context, intent)
-//            }
-//            //else if (alarmisToday(intent)){
-//                //startAlarmService(context, intent)
-//            //}
-//        }
-    }
-
-
-
-//    fun alarmisToday(intent : Intent) : Boolean{
-//        val calendar = java.util.Calendar.getInstance()
-//        val today = calendar.get(java.util.Calendar.DAY_OF_WEEK)
-//        return when(today){
-//            java.util.Calendar.MONDAY -> intent.getBooleanExtra(MONDAY, false)
-//            java.util.Calendar.TUESDAY -> intent.getBooleanExtra(TUESDAY, false)
-//            java.util.Calendar.WEDNESDAY -> intent.getBooleanExtra(WEDNESDAY, false)
-//            java.util.Calendar.THURSDAY -> intent.getBooleanExtra(THURSDAY, false)
-//            java.util.Calendar.FRIDAY -> intent.getBooleanExtra(FRIDAY, false)
-//            java.util.Calendar.SATURDAY -> intent.getBooleanExtra(SATURDAY, false)
-//            java.util.Calendar.SUNDAY -> intent.getBooleanExtra(SUNDAY, false)
-//            else -> false
-//        }
-//    }
-//
-//    fun startAlarmService(context: Context, intent: Intent){
-//        val serviceIntent = Intent(context, AlarmService::class.java)
-//        serviceIntent.putExtra(TITLE, intent.getStringExtra(TITLE))
-//        context.startService(serviceIntent)
-//    }
-//
-//    fun startRescheduleAlarmsService(context: Context){
-//        val intent = Intent(context, RescheduleAlarmsService::class.java)
-//        context.startService(intent)
-//    }
-
-
 }
