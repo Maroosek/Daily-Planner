@@ -58,7 +58,7 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
         var selectedTime = String.format("%02d:%02d", calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE])
         var eventDate = arguments?.getString("date")
         var eventIndex = arguments?.getString("eventIndex")
-        var eventID = Random.nextInt(1000001, 2000000)
+        var eventID = Random.nextInt(800001, 2000000)
 
         eventTime?.setOnTimeChangedListener { view, hourOfDay, minute -> // getting time from time picker
             selectedTime = String.format("%02d:%02d", hourOfDay, minute)
@@ -118,7 +118,6 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
 
         if (calendar.timeInMillis >= System.currentTimeMillis()) {
             val index = eventsList[indexOfEvent].eventID
-            //val alarmManager = requireActivity().getSystemService(ALARM_SERVICE) as AlarmManager
             val intent = Intent(requireContext(), AlarmReceiver::class.java)
             intent.putExtra("source", "calendarFragment")
             intent.putExtra("eventID", index)
@@ -130,7 +129,6 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
 
     }
     fun cancelEvent(indexOfEvent: Int) {
-        //val alarmManager = requireActivity().getSystemService(ALARM_SERVICE) as AlarmManager
         val index = eventsList[indexOfEvent].eventID
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         alarmManager?.cancel(PendingIntent.getBroadcast(requireContext(), index, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT))

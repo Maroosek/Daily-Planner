@@ -2,7 +2,9 @@ package pl.marosek.myappxd
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,6 +16,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.gson.Gson
 
 
@@ -31,6 +34,9 @@ class MainActivity : AppCompatActivity() {
         val homeFragment = HomeFragment()//creating fragment
         val clockFragment = ClockFragment()
         val calendarFragment = CalendarFragment()
+
+        //Creating notification channel
+        notificationChannel()
 
         //getting arrays from shared preferences when opening app
         getArraysFromSharedPref()
@@ -50,6 +56,17 @@ class MainActivity : AppCompatActivity() {
         btnCalendarFragment.setOnClickListener {
             setFragment(calendarFragment)
         }
+    }
+    //Function for creating notification channel, required for Android 8.0 and above
+    fun notificationChannel() {
+        val notificationChannel = NotificationChannel(
+            "pl.marosek.myappxd",
+            "Alarms",
+            NotificationManager.IMPORTANCE_HIGH
+        )
+        notificationChannel.description = "Notification Channel for Alarms"
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(notificationChannel)
     }
     //Function for setting fragment
     fun setFragment(fragment: Fragment){
@@ -77,13 +94,10 @@ class MainActivity : AppCompatActivity() {
         val calendarList = sharedPref.getString("eventList", null)
         val clockList = sharedPref.getString("alarmList", null)
         if (calendarList != null) {
-            //eventsList = calendarList.split(",") as mutableListOf<String>
-            //calendarList.split(",").forEach { eventsList }
             val calendar = Gson().fromJson(calendarList, Array<Event>::class.java)
             eventsList = calendar.toMutableList()
         }
         if (clockList != null) {
-            //alarmsList = clockList.split(",") as ArrayList<String>
             val clock = Gson().fromJson(clockList, Array<Alarm>::class.java)
             alarmsList = clock.toMutableList()
         }

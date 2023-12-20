@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.os.Bundle
-import android.text.style.ClickableSpan
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,8 +15,6 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.TimePicker
 import android.widget.Toast
-import android.widget.ToggleButton
-import androidx.core.content.getSystemService
 import java.util.Calendar
 import kotlin.random.Random
 
@@ -42,6 +39,7 @@ class ClockFragmentAlarm : Fragment(R.layout.fragment_clock_event) {
     var addAlarm :Button? = null
     var cancelAlarm :Button? = null
     var textLabel : TextView? = null
+    var alarmManager : AlarmManager? = null
 
 
     override fun onCreateView(
@@ -67,10 +65,11 @@ class ClockFragmentAlarm : Fragment(R.layout.fragment_clock_event) {
         title = view.findViewById((R.id.alarmTitle))
         addAlarm = view.findViewById(R.id.addAlarmButton)
         cancelAlarm = view.findViewById(R.id.cancelAlarmButton)
+        alarmManager = context?.getSystemService(ALARM_SERVICE) as AlarmManager
         //AlarmID is random to avoid collision with callender intents
         var alarmID = Random.nextInt(1, 100000)
         var alarmTime = ""
-        var active = false
+        val active = false
         alarmID *= 8
 
         textLabel = view.findViewById(R.id.debug)
@@ -86,18 +85,32 @@ class ClockFragmentAlarm : Fragment(R.layout.fragment_clock_event) {
             var alarm = alarmsList[alarmIndex.toInt()]
             title?.setText(alarm.alarmTitle)
             alarmID = alarm.alarmID
-            active = alarm.isActive
+            //active = alarm.isActive//debugging
             var time = alarm.alarmTime.split(":")
             alarmTimePicker?.hour = time[0].toInt()
             alarmTimePicker?.minute = time[1].toInt()
             alarmTime = alarm.alarmTime
-            if(alarm.monday == true) mon?.isChecked = true
-            if(alarm.tuesday == true) tue?.isChecked = true
-            if(alarm.wednesday == true) wed?.isChecked = true
-            if(alarm.thursday == true) thu?.isChecked = true
-            if(alarm.friday == true) fri?.isChecked = true
-            if(alarm.saturday == true) sat?.isChecked = true
-            if(alarm.sunday == true) sun?.isChecked = true
+            if(alarm.monday == true) {
+                mon?.isChecked = true
+            }
+            if(alarm.tuesday == true) {
+                tue?.isChecked = true
+            }
+            if(alarm.wednesday == true) {
+                wed?.isChecked = true
+            }
+            if(alarm.thursday == true) {
+                thu?.isChecked = true
+            }
+            if(alarm.friday == true) {
+                fri?.isChecked = true
+            }
+            if(alarm.saturday == true) {
+                sat?.isChecked = true
+            }
+            if(alarm.sunday == true) {
+                sun?.isChecked = true
+            }
         }
 
         addAlarm?.setOnClickListener {
@@ -105,9 +118,7 @@ class ClockFragmentAlarm : Fragment(R.layout.fragment_clock_event) {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.flFragment, clockFragment)
             transaction.commit()
-            val alarmName = title?.text.toString() //works
-
-            //var alarmID = Random.nextInt(0, 1000000)
+            val alarmName = title?.text.toString()
 
             var mon = mon?.isChecked
             var tue = tue?.isChecked
@@ -118,6 +129,9 @@ class ClockFragmentAlarm : Fragment(R.layout.fragment_clock_event) {
             var sun = sun?.isChecked
 
             if (alarmIndex != null) {
+
+                var alarm = alarmsList[alarmIndex.toInt()]
+                cancelAlarm(alarm)
                 alarmsList.removeAt(alarmIndex.toInt())
             }
 
@@ -129,15 +143,46 @@ class ClockFragmentAlarm : Fragment(R.layout.fragment_clock_event) {
         }
 
         cancelAlarm?.setOnClickListener {
-            cancelAlarm()
+            cancelButton()
         }
     }
-    fun cancelAlarm(){
+    fun cancelButton(){
         val clockFragment = ClockFragment()
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
         transaction.replace(R.id.flFragment, clockFragment)
         transaction.commit()
         Toast.makeText(context, "Alarm Canceled!", Toast.LENGTH_SHORT).show()
+    }
+    fun cancelAlarm(alarm : Alarm) {
+        val index = alarm.alarmID
+        cancelIntent(index)
+
+        if(alarm.monday == true) {
+            cancelIntent(index - 7)
+        }
+        if(alarm.tuesday == true) {
+            cancelIntent(index - 6)
+        }
+        if(alarm.wednesday == true) {
+            cancelIntent(index - 5)
+        }
+        if(alarm.thursday == true) {
+            cancelIntent(index - 4)
+        }
+        if(alarm.friday == true) {
+            cancelIntent(index - 3)
+        }
+        if(alarm.saturday == true) {
+            cancelIntent(index - 2)
+        }
+        if(alarm.sunday == true) {
+            cancelIntent(index - 1)
+        }
+
+    }
+    fun cancelIntent(index: Int){
+        val intent = Intent(requireContext(), AlarmReceiver::class.java)
+        alarmManager?.cancel(PendingIntent.getBroadcast(requireContext(), index, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT))
     }
 
 }

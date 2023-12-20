@@ -52,31 +52,30 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar){
         var selectedEvent: Event? = null
         var currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("d-M-yyyy"))
 
+        textLabel?.visibility = View.GONE //debugging
+        //textLabel?.setText("Selected date is $currentDate") //debugging
+
         calendarView = view.findViewById(R.id.calendarView)
         textLabel = view.findViewById(R.id.daySelection)
         addEventButton = view.findViewById(R.id.addEventButton)
         deleteEventButton = view.findViewById(R.id.deleteEventButton)
         editEventButton = view.findViewById(R.id.editEventButton)
         eventListView = view.findViewById(R.id.eventList)
-        textLabel?.visibility = View.GONE //debugging
-        //textLabel?.setText("Selected date is $currentDate") //debugging
         alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        refreshList(currentDate)
-
+        refreshList(currentDate) //refreshes list on startup
+        //On click listener to pick event from list
         eventListView!!.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-            //Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show()//Debugging
             selectedEvent = null
             val selected = eventListView?.getItemAtPosition(position).toString()
             for (event in eventsList) {
                 if (event.eventName + " " + event.eventTime == selected) {
                     selectedEvent = event
-
                 }
             }
-            Toast.makeText(context, "Selected" +selectedEvent, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Selected" +selectedEvent, Toast.LENGTH_SHORT).show()//Debugging
         }
-
         addEventButton?.setOnClickListener {
             //Toast.makeText(context, "Event added", Toast.LENGTH_SHORT).show()//debugging
             if (selectedDate != null) {
@@ -90,12 +89,9 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar){
         //TODO make buttons appear and disappear when event is selected or not
         deleteEventButton?.setOnClickListener {
             if (selectedEvent != null) {
-                eventsList.remove(selectedEvent)
                 var indexOfEvent = selectedEvent!!.eventID
-
                 cancelEvent(indexOfEvent)
-                //var index = eventsList[selectedEvent!!.eventID]
-                //var index = eventsList[indexOfEvent].eventID
+                eventsList.remove(selectedEvent)
                 Toast.makeText(context, "Event deleted", Toast.LENGTH_SHORT).show()
             }
             else
@@ -112,6 +108,7 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar){
                 val bundle = Bundle()
                 val indexOfEvent = eventsList.indexOf(selectedEvent)
                 //PutString is used due to PutInt default value being 0 which is the first element of the list
+                //Which causes problems when value should be null instead of 0
                 bundle.putString("eventIndex", indexOfEvent.toString())
                 calendarFragmentEvent.arguments = bundle
 
@@ -140,7 +137,7 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar){
         val bundle = Bundle()
         val calendarFragmentEvent = CalendarFragmentEvent()
 
-        bundle.putString("date", date)
+        bundle.putString("date", date) //passing date to calendarFragmentEvent
         calendarFragmentEvent.arguments = bundle
 
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
@@ -150,14 +147,13 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar){
     }
 
     fun refreshList(selectedDate: String) {
-        var filtered = eventsList.filter { it.eventDate == selectedDate }
+        var filtered = eventsList.filter { it.eventDate == selectedDate } //filtering events by date
         var adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1,
-            filtered.map { it.eventName+ " " + it.eventTime })
+            filtered.map { it.eventName+ " " + it.eventTime }) //creating adapter for listview to show only event name and time
         eventListView?.adapter = adapter
 
     }
     fun cancelEvent(index: Int){
-        //val alarmManager = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         alarmManager?.cancel(PendingIntent.getBroadcast(requireContext(), index, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT))
     }
