@@ -6,63 +6,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".CalendarFragment">
+    tools:context=".SnoozeFragment">
 
     <TextView
-        android:id="@+id/fragmentCalendarText"
+        android:id="@+id/fragmentSnoozeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textSize="35dp"
-        android:text="Calendar Event"
+        android:text="Snooze"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/eventName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter event name"
-        android:inputType="text"
-        android:minHeight="48dp"/>
-
-    <TimePicker
-        android:id="@+id/eventTimePicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:timePickerMode="spinner" />
-
-    <TextView
-        android:id="@+id/daySelection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="35dp"
-        android:text="Test" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/eventsOperations"
-        android:orientation="horizontal">
+        android:id="@+id/eventOptions"
+        android:orientation="horizontal"
+        android:layout_marginTop="120dp">
 
         <Button
-            android:id="@+id/cancelEventButton"
+            android:id="@+id/snoozeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancel"
+            android:text="Snooze"
             android:layout_marginHorizontal="20dp"/>
 
         <Button
-            android:id="@+id/submitEventButton"
+            android:id="@+id/cancelSnoozeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
-            android:text="Save"
+            android:text="Stop"
             android:layout_marginHorizontal="20dp"/>
+
+
     </LinearLayout>
-
 
 </LinearLayout>

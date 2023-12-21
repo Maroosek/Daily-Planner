@@ -56,8 +56,8 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
 
         var calendar = Calendar.getInstance()
         var selectedTime = String.format("%02d:%02d", calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE])
-        var eventDate = arguments?.getString("date")
-        var eventIndex = arguments?.getString("eventIndex")
+        var eventDate = arguments?.getString("date") //sets date from bundle
+        var eventIndex = arguments?.getString("eventIndex") //sets index from bundle, its actual list index
         var eventID = Random.nextInt(800001, 2000000)
 
         eventTime?.setOnTimeChangedListener { view, hourOfDay, minute -> // getting time from time picker
@@ -88,7 +88,7 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
 
             scheduleEvent(indexOfEvent)
 
-            Toast.makeText(context, "Event Added", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Added event: "+eventName, Toast.LENGTH_SHORT).show()
             changeFragment()
 
             //val Event = Event(eventName, selectedTime, eventDate) //debugging
@@ -98,7 +98,7 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
 
         cancelButton?.setOnClickListener {
             changeFragment()
-            Toast.makeText(context, "Event Canceled", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Canceled adding event", Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -119,9 +119,9 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
         if (calendar.timeInMillis >= System.currentTimeMillis()) {
             val index = eventsList[indexOfEvent].eventID
             val intent = Intent(requireContext(), AlarmReceiver::class.java)
-            intent.putExtra("source", "calendarFragment")
-            intent.putExtra("eventID", index)
-            intent.putExtra("eventName", eventsList[indexOfEvent].eventName)
+            intent.putExtra("source", "calendarFragment") //used to determine which fragment is calling the receiver
+            intent.putExtra("eventID", index) //used to tell which ID is calling the receiver
+            intent.putExtra("eventName", eventsList[indexOfEvent].eventName) //Passing event name to receiver
             val pendingIntent = PendingIntent.getBroadcast(requireContext(), index, intent,
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
             alarmManager?.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
@@ -129,7 +129,7 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
 
     }
     fun cancelEvent(indexOfEvent: Int) {
-        val index = eventsList[indexOfEvent].eventID
+        val index = eventsList[indexOfEvent].eventID //gets index from list to call for intent
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         alarmManager?.cancel(PendingIntent.getBroadcast(requireContext(), index, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT))
     }

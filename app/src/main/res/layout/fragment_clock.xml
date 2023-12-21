@@ -8,17 +8,14 @@
     android:orientation="vertical"
     tools:context=".ClockFragment">
 
-    <TextView
-        android:id="@+id/fragmentClockText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Clock"
-        android:textAlignment="center"
-        android:textSize="35dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toggleBtn" />
+<!--    <TextView-->
+<!--        android:id="@+id/fragmentClockText"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Clock"-->
+<!--        android:textAlignment="center"-->
+<!--        android:textSize="35dp"-->
+<!--        android:layout_margin="20dp"/>-->
 
     <ToggleButton
         android:id="@+id/toggleBtn"
@@ -26,16 +23,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="20dp"
-        android:checked="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:checked="false" />
 
-    <Button
-        android:id="@+id/stopBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop" />
+<!--    <Button-->
+<!--        android:id="@+id/stopBtn"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Stop"-->
+<!--        android:layout_marginHorizontal="20dp"/>-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -47,21 +42,22 @@
             android:id="@+id/deleteAlarmButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Delete" />
+            android:text="Delete"
+            android:layout_marginHorizontal="20dp"/>
 
         <Button
             android:id="@+id/editAlarmButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edit" />
+            android:text="Edit"
+            android:layout_marginHorizontal="20dp"/>
 
         <Button
             android:id="@+id/newAlarmButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="+"
-            android:layout_gravity="right"
-            android:layout_margin="20dp" />
+            android:layout_marginHorizontal="20dp"/>
 
     </LinearLayout>
 
@@ -76,7 +72,8 @@
 
     <ListView
         android:id="@+id/alarmList"
-        android:layout_width="wrap_content"
-        android:layout_height="400dp" />
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_marginHorizontal="20dp"/>
 
 </LinearLayout>

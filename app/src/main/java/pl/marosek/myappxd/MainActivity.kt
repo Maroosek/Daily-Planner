@@ -136,5 +136,16 @@ class MainActivity : AppCompatActivity() {
         saveArraysToSharedPref() //saving arrays to shared preferences when closing app
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        val snoozeFragment = SnoozeFragment()
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.flFragment, snoozeFragment)
+            addToBackStack(null)
+            commitAllowingStateLoss()
+        }
+        Toast.makeText(this, "Alarm Canceled!", Toast.LENGTH_SHORT).show()
+    }
+
 }
 

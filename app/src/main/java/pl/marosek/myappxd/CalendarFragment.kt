@@ -54,9 +54,9 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar){
 
         textLabel?.visibility = View.GONE //debugging
         //textLabel?.setText("Selected date is $currentDate") //debugging
+        textLabel = view.findViewById(R.id.daySelection) //debugging
 
         calendarView = view.findViewById(R.id.calendarView)
-        textLabel = view.findViewById(R.id.daySelection)
         addEventButton = view.findViewById(R.id.addEventButton)
         deleteEventButton = view.findViewById(R.id.deleteEventButton)
         editEventButton = view.findViewById(R.id.editEventButton)
@@ -74,7 +74,7 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar){
                     selectedEvent = event
                 }
             }
-            Toast.makeText(context, "Selected" +selectedEvent, Toast.LENGTH_SHORT).show()//Debugging
+            Toast.makeText(context, "Selected: " +selectedEvent?.eventName, Toast.LENGTH_SHORT).show()//Debugging
         }
         addEventButton?.setOnClickListener {
             //Toast.makeText(context, "Event added", Toast.LENGTH_SHORT).show()//debugging
@@ -86,13 +86,13 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar){
                 passDate(currentDate)
             }
         }
-        //TODO make buttons appear and disappear when event is selected or not
+
         deleteEventButton?.setOnClickListener {
             if (selectedEvent != null) {
                 var indexOfEvent = selectedEvent!!.eventID
                 cancelEvent(indexOfEvent)
                 eventsList.remove(selectedEvent)
-                Toast.makeText(context, "Event deleted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Deleted: "+selectedEvent?.eventName, Toast.LENGTH_SHORT).show()
             }
             else
             {
@@ -106,7 +106,7 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar){
             if (selectedEvent != null) {
                 val calendarFragmentEvent = CalendarFragmentEvent()
                 val bundle = Bundle()
-                val indexOfEvent = eventsList.indexOf(selectedEvent)
+                val indexOfEvent = eventsList.indexOf(selectedEvent) //gets index from list
                 //PutString is used due to PutInt default value being 0 which is the first element of the list
                 //Which causes problems when value should be null instead of 0
                 bundle.putString("eventIndex", indexOfEvent.toString())
@@ -114,7 +114,7 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar){
 
                 val transaction = requireActivity().supportFragmentManager.beginTransaction()
                 transaction.replace(R.id.flFragment, calendarFragmentEvent)
-                transaction.addToBackStack(null)
+                //transaction.addToBackStack(null)
                 transaction.commit()
             }
             else
@@ -128,7 +128,7 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar){
             selectedEvent = null
             val month = month + 1 //add 1 to month because it starts from 0
             selectedDate = "$dayOfMonth-$month-$year"
-            textLabel?.setText("Selected date is $selectedDate")
+            //textLabel?.setText("Selected date is $selectedDate")//debugging
             refreshList(selectedDate.toString())
         }
     }

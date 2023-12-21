@@ -25,25 +25,17 @@ class AlarmReceiver : BroadcastReceiver() {
         title = "Clock"
         notifDescription = intent?.getStringExtra("alarmName")!!
         notificationID = intent?.getIntExtra("alarmID", 1)!!
+        var state = intent?.getStringExtra("state")
+
         Toast.makeText(context, "WAKE UP!!!", Toast.LENGTH_SHORT).show()
-        //Sets default alarm sound
-        var alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        //If there is no default alarm sound, sets default notification sound
-        if (alarmSound == null) {
-            alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        }
-        val ringtone = RingtoneManager.getRingtone(context, alarmSound)
-        ringtone.play()
-        //Starts the vibration and toast
-//        val vibration = context!!.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-//        vibration.vibrate(4000)
-
-
 
 //        val SnoozeIntent = Intent(context, MainActivity::class.java)
 //        //SnoozeIntent.putExtra("source", "Snooze")
 //        val broadcastIntent = Intent(context, AlarmReceiver::class.java)
         //MainActivity().Snooze()
+//        val SnoozeIntent = Intent(context, MainActivity::class.java)
+//        SnoozeIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//        val SnoozePendingIntent = PendingIntent.getActivity(context, 0, SnoozeIntent, PendingIntent.FLAG_ONE_SHOT)
 
         //NOTIFICATION
         val manager = context!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -51,7 +43,8 @@ class AlarmReceiver : BroadcastReceiver() {
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(title)
             .setContentText(notifDescription)
-            .setPriority(NotificationCompat.PRIORITY_HIGH) //Used for heads-up notification
+            //.setContentIntent(SnoozePendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_MAX) //Used for heads-up notification and wake up
             //.addAction(R.drawable.ic_launcher_foreground, "Snooze", PendingIntent.getActivity(context, 0, SnoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT))
             .build()
 
@@ -62,7 +55,7 @@ class AlarmReceiver : BroadcastReceiver() {
         notifDescription = intent?.getStringExtra("eventName")!!
         notificationID = intent.getIntExtra("eventID", 1)
         //Toast.makeText(context, "Test", Toast.LENGTH_SHORT).show()//debugging
-        //var alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
 
         //NOTIFICATION
         val manager = context!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -70,9 +63,8 @@ class AlarmReceiver : BroadcastReceiver() {
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(title)
             .setContentText(notifDescription)
-            .setPriority(NotificationCompat.PRIORITY_HIGH) //Used for heads-up notification
-            //.addAction(R.drawable.ic_launcher_foreground, "Snooze", PendingIntent.getActivity(context, 0, SnoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT))
-            //.setSound(alarmSound)
+            .setPriority(NotificationCompat.PRIORITY_MAX) //Used for heads-up notification and wake up
+            //.setSound(alarmSound) //No need for sound, otherwise it will replace device notofication sound
             .build()
 
         manager.notify(notificationID, notification)

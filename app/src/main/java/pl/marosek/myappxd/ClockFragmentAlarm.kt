@@ -70,10 +70,10 @@ class ClockFragmentAlarm : Fragment(R.layout.fragment_clock_event) {
         var alarmID = Random.nextInt(1, 100000)
         var alarmTime = ""
         val active = false
-        alarmID *= 8
+        alarmID *= 8 //to avoid collision with repeating intents, 7 days of week + 1 single fire
 
         textLabel = view.findViewById(R.id.debug)
-        var alarmIndex = arguments?.getString("alarmIndex")
+        var alarmIndex = arguments?.getString("alarmIndex") //sets index from bundle, its actual list index
 
         var calendar = Calendar.getInstance()
         alarmTime = String.format("%02d:%02d", calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE])
@@ -139,7 +139,7 @@ class ClockFragmentAlarm : Fragment(R.layout.fragment_clock_event) {
             //val addedAlarm = Alarm(alarmTime, alarmName, active, mon, tue, wed, thu, fri, sat, sun) //debugging
             addAlarm(alarmTime, alarmName, alarmID, active, mon, tue, wed, thu, fri, sat, sun)
 
-            Toast.makeText(context, "Alarm Added", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Added alarm: "+alarmName, Toast.LENGTH_SHORT).show()
         }
 
         cancelAlarm?.setOnClickListener {
@@ -151,12 +151,12 @@ class ClockFragmentAlarm : Fragment(R.layout.fragment_clock_event) {
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
         transaction.replace(R.id.flFragment, clockFragment)
         transaction.commit()
-        Toast.makeText(context, "Alarm Canceled!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Canceled adding alarm", Toast.LENGTH_SHORT).show()
     }
     fun cancelAlarm(alarm : Alarm) {
-        val index = alarm.alarmID
-        cancelIntent(index)
-
+        val index = alarm.alarmID //getting ID of alarm
+        cancelIntent(index) // calling for nearest day
+        //calling for every day of week of repeating alarm
         if(alarm.monday == true) {
             cancelIntent(index - 7)
         }
