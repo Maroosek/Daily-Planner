@@ -15,46 +15,29 @@
 
         <TextView
             android:id="@+id/fragmentHomeText"
+            android:text="Home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:textSize="35dp"
-            android:text="Home" />
+            android:layout_gravity="center"
+            android:textSize="35sp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/helpButton"
+            android:text="Help"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/eventOptions"
-            android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/snoozeButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Snooze"
-                    android:layout_marginHorizontal="20dp"/>
-
-                <Button
-                    android:id="@+id/helpButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Help"
-                    android:layout_marginStart="160dp"/>
-
-
-
-
-        </LinearLayout>
-
-
+            android:layout_gravity="end"
+            android:layout_marginHorizontal="20dp"/>
 
         <TextView
             android:id="@+id/eventText"
+            android:text="Today Events"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:textSize="35dp"
-            android:text="Today Events"
+            android:layout_gravity="center"
+            android:textSize="35sp"
             android:layout_marginHorizontal="20dp"/>
 
         <ListView
@@ -65,11 +48,12 @@
 
         <TextView
             android:id="@+id/alarmText"
+            android:text="Active Alarms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:textSize="35dp"
-            android:text="Active Alarms"
+            android:layout_gravity="center"
+            android:textSize="35sp"
             android:layout_marginHorizontal="20dp"/>
 
         <ListView

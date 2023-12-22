@@ -8,28 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
-import androidx.recyclerview.widget.RecyclerView
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
-    var todayEvents : ListView? = null
-    var activeAlarms : ListView? = null
-    var helpButton : Button? = null
-    var snoozeButton : Button? = null
+    private var todayEvents : ListView? = null
+    private var activeAlarms : ListView? = null
+    private var helpButton : Button? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,9 +31,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         todayEvents = view.findViewById(R.id.todayEvents)
         activeAlarms = view.findViewById(R.id.activeAlarms)
         helpButton = view.findViewById(R.id.helpButton)
-        snoozeButton = view.findViewById(R.id.snoozeButton)
 
-        var currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("d-M-yyyy"))
+        //Setting current date for todayEvents
+        val currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("d-M-yyyy"))
 
         todayEventList(currentDate)
         activeAlarms()
@@ -54,41 +41,48 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         helpButton?.setOnClickListener {
             helpButton()
         }
-        snoozeButton?.setOnClickListener {
-            snooze()
-        }
 
     }
-    fun todayEventList(selectedDate: String) {
-        var filtered = eventsList.filter { it.eventDate == selectedDate } //filtering events by date
-        var adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1,
-            filtered.map { it.eventName+ " " + it.eventTime }) //creating adapter for listview to show only event name and time
+    private fun todayEventList(selectedDate: String) {
+        val filtered = eventsList.filter { it.eventDate == selectedDate }.sortedBy { it.eventTime } //filtering events by date
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1,
+            filtered.map { it.eventTime+ " " + it.eventName }) //creating adapter for listview to show only event name and time
         todayEvents?.adapter = adapter
     }
-    fun activeAlarms() {
-        var active = alarmsList.filter { it.isActive == true } //filtering events by isActive
-        var adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1,
-            active.map { it.alarmTitle+ " " + it.alarmTime + " " + if (it.monday == true){"Monday"}else {""} +
+    private fun activeAlarms() {
+        val active = alarmsList.filter { it.isActive }.sortedBy { it.alarmTime } //filtering events by isActive
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1,
+            active.map { it.alarmTitle+ ", " + it.alarmTime + " " + if (it.monday == true){"Monday"}else {""} +
                  " " + if (it.tuesday == true){"Tuesday"}else {""}+ " " + if (it.wednesday == true){"Wednesday"}else {""} +
                  " " + if (it.thursday == true){"Thursday"}else {""}+ " " + if (it.friday == true){"Friday"}else {""} +
                  " " + if (it.saturday == true){"Saturday"}else {""}+ " " + if (it.sunday == true){"Sunday"}else {""}} )
         activeAlarms?.adapter = adapter //creating adapter for listview to show only active days in alarm
     }
-    fun helpButton(){
-        val clock = "Obsługa budzika:" +
-                "\n - Dodaj nowy budzik przyciskiem '+' w prawym rogu ekranu" +
-                "\n - Ustaw godzinę oraz dni w które chcesz aby budzik zadzwonił" +
-                "\n - Brak ustawienia dni skutkuje utworzeniem jednorazowego alarmu" +
-                "\n - Włącz/wyłącz budzik wybierając go z listy i wciśnij guzik WŁ" +
-                "\n - Usuń budzik wybierając go z listy po czym wciśnij guzik -" +
-                "\n - Edytuj budzik wybierając go z listy po czym wciśnij guzik edytuj" +
-                "\n !Każdorazowa edycja wyłącza budzik!"
-        val calendar = "Obsługa kalendarza:" +
-                "\n - Wybierz dzień z ekranu kalendarza, po wybraniu wciśnij guzik + aby dodać wydarznie" +
-                "\n - Ustaw nazwę oraz godzinę wewnątrz nowego ekranu" +
-                "\n - Usuń wydarzenie wybierając je z listy po czym wciśnij guzik -" +
-                "\n - Edytuj wydarzenie wybierając je z listy po czym wciśnij guzik edytuj"
+    private fun helpButton(){
+        val clock = "Clock controls:" +
+                "\n - To add a new alarm tap '+' on right side of screen" +
+                "\n - Set time and days in which clock should set alarm" +
+                "\n - If no day was selected clock will alarm one time on nearest occasion" +
+                "\n - Turn ON/OFF alarm by selecting one from list and click toggle button" +
+                "\n - Delete alarm by selecting one from list and tap '-' on left side of screen" +
+                "\n - Edit alarm by selecting one from list and tap 'Edit' option" +
+                "\n !Every edit will turn off that alarm!"
+        val calendar = "Calendar controls:" +
+                "\n - To add a new event select day on calendar and tap '+' on right side of screen" +
+                "\n - Set name and time for a event" +
+                "\n - Delete event by selecting one from list and tap '-' on left side of screen" +
+                "\n - Edit event by selecting one from list and tap 'Edit' option"
+        val snooze = "Snooze controls:" +
+                "\n - Snooze will appear as notification on alarm trigger time" +
+                "\n - Click alarm notification to enter snooze screen" +
+                "\n - You can set snooze time you desire or exit snooze screen" +
+                "\n !Remember to save snooze time before exiting!"
 
+        AlertDialog.Builder(requireContext())
+            .setTitle("Snooze")
+            .setMessage(snooze)
+            .setPositiveButton("OK") { _, _ -> }
+            .show()
         AlertDialog.Builder(requireContext())
             .setTitle("Calendar")
             .setMessage(calendar)
@@ -100,15 +94,4 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             .setPositiveButton("OK") { _, _ -> }
             .show()
     }
-    fun snooze(){
-        val snoozeFragment = SnoozeFragment()
-        val transaction = requireActivity().supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.flFragment, snoozeFragment)
-        transaction.commit()
-    }
-
-
-
-
-
 }

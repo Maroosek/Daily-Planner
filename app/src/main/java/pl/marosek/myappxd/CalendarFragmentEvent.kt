@@ -17,22 +17,14 @@ import android.widget.Toast
 import java.util.Calendar
 import kotlin.random.Random
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
-/**
- * A simple [Fragment] subclass.
- * Use the [CalendarFragmentEvent.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
 
-    var textLabel : TextView? = null
-    var eventTitle : EditText? = null
-    var submitButton : Button? = null
-    var cancelButton : Button? = null
-    var eventTime : TimePicker? = null
-    var alarmManager : AlarmManager? = null
+    private var textLabel : TextView? = null
+    private var eventTitle : EditText? = null
+    private var submitButton : Button? = null
+    private var cancelButton : Button? = null
+    private var eventTime : TimePicker? = null
+    private var alarmManager : AlarmManager? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,19 +37,19 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        textLabel = view.findViewById(R.id.daySelection)
         eventTitle = view.findViewById(R.id.eventName)
         eventTime = view.findViewById(R.id.eventTimePicker)
         eventTime!!.setIs24HourView(true)
         submitButton = view.findViewById(R.id.submitEventButton)
         cancelButton = view.findViewById(R.id.cancelEventButton)
+        textLabel = view.findViewById(R.id.daySelection)
         textLabel?.setText("Selected date is ${arguments?.getString("date")}")
         alarmManager = context?.getSystemService(ALARM_SERVICE) as AlarmManager
 
-        var calendar = Calendar.getInstance()
+        val calendar = Calendar.getInstance()
         var selectedTime = String.format("%02d:%02d", calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE])
         var eventDate = arguments?.getString("date") //sets date from bundle
-        var eventIndex = arguments?.getString("eventIndex") //sets index from bundle, its actual list index
+        val eventIndex = arguments?.getString("eventIndex") //sets index from bundle, its actual list index
         var eventID = Random.nextInt(800001, 2000000)
 
         eventTime?.setOnTimeChangedListener { view, hourOfDay, minute -> // getting time from time picker
@@ -65,14 +57,13 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
         }
 
         if (eventIndex != null) { //if event is being edited
-            var index = eventIndex.toInt()
+            val index = eventIndex.toInt()
             eventID = eventsList[index].eventID
             eventTitle!!.setText(eventsList[index].eventName)
             eventTime!!.hour = eventsList[index].eventTime.split(":")[0].toInt()
             eventTime!!.minute = eventsList[index].eventTime.split(":")[1].toInt()
             textLabel?.setText("Selected date is ${eventsList[index].eventDate}")
             eventDate = eventsList[index].eventDate
-            //textLabel?.setText("Selected date is $eventIndex")
             cancelEvent(index)
         }
 
@@ -83,24 +74,18 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
                 eventsList.removeAt(eventIndex.toInt())
             }
             addEvent(eventID, eventName, selectedTime, eventDate)
-            var event = Event(eventID ,eventName, selectedTime, eventDate)
+            val event = Event(eventID ,eventName, selectedTime, eventDate)
             val indexOfEvent = eventsList.indexOf(event)
 
             scheduleEvent(indexOfEvent)
 
-            Toast.makeText(context, "Added event: "+eventName, Toast.LENGTH_SHORT).show()
             changeFragment()
-
-            //val Event = Event(eventName, selectedTime, eventDate) //debugging
-//            Toast.makeText(context, "Event Submited, $eventName, $selectedTime," +
-//                    " $eventDate", Toast.LENGTH_SHORT).show()//debugging
+            Toast.makeText(context, "Added event: $eventName", Toast.LENGTH_SHORT).show()
         }
 
         cancelButton?.setOnClickListener {
             changeFragment()
-            Toast.makeText(context, "Canceled adding event", Toast.LENGTH_SHORT).show()
         }
-
     }
     fun changeFragment(){
         val calendarFragment = CalendarFragment()
@@ -109,7 +94,7 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
         transaction.commit()
     }
     fun scheduleEvent(indexOfEvent: Int) {
-        var calendar = Calendar.getInstance()
+        val calendar = Calendar.getInstance()
         calendar[Calendar.HOUR_OF_DAY] = eventsList[indexOfEvent].eventTime.split(":")[0].toInt()
         calendar[Calendar.MINUTE] = eventsList[indexOfEvent].eventTime.split(":")[1].toInt()
         calendar[Calendar.DAY_OF_MONTH] = eventsList[indexOfEvent].eventDate.split("-")[0].toInt()
@@ -126,12 +111,10 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
             alarmManager?.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
         }
-
     }
     fun cancelEvent(indexOfEvent: Int) {
         val index = eventsList[indexOfEvent].eventID //gets index from list to call for intent
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         alarmManager?.cancel(PendingIntent.getBroadcast(requireContext(), index, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT))
     }
-
 }

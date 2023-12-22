@@ -10,36 +10,44 @@
 
     <TextView
         android:id="@+id/fragmentSnoozeText"
+        android:text="Snooze"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:textSize="35dp"
-        android:text="Snooze"
+        android:textSize="35sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <NumberPicker
+        android:id="@+id/numberPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"/>
+
 
     <LinearLayout
+        android:id="@+id/eventOptions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/eventOptions"
         android:orientation="horizontal"
         android:layout_marginTop="120dp">
 
         <Button
             android:id="@+id/snoozeButton"
+            android:text="Snooze"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Snooze"
+            android:layout_gravity="start"
             android:layout_marginHorizontal="20dp"/>
 
         <Button
             android:id="@+id/cancelSnoozeButton"
+            android:text="Stop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Stop"
+            android:layout_gravity="end"
             android:layout_marginHorizontal="20dp"/>
 
 

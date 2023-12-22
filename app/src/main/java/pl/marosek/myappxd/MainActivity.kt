@@ -2,21 +2,12 @@ package pl.marosek.myappxd
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.gson.Gson
 
 
@@ -34,6 +25,9 @@ class MainActivity : AppCompatActivity() {
         val homeFragment = HomeFragment()//creating fragment
         val clockFragment = ClockFragment()
         val calendarFragment = CalendarFragment()
+        val snoozeFragment = SnoozeFragment()
+
+        val intentTest = intent.getStringExtra("source")
 
         //Creating notification channel
         notificationChannel()
@@ -43,6 +37,15 @@ class MainActivity : AppCompatActivity() {
 
         //Starting fragment
         setFragment(homeFragment)
+
+        //Checking if received intent from AlarmReceiver
+        if(intentTest == "snoozeFragment") {
+            supportFragmentManager.beginTransaction().apply {
+                replace(R.id.flFragment, snoozeFragment)
+                commit()
+            }
+            Toast.makeText(this, "Aaaaaa!", Toast.LENGTH_SHORT).show()
+        }
 
         //Fragment buttons
         btnHomeFragment.setOnClickListener {
@@ -58,18 +61,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
     //Function for creating notification channel, required for Android 8.0 and above
-    fun notificationChannel() {
+    private fun notificationChannel() {
         val notificationChannel = NotificationChannel(
             "pl.marosek.myappxd",
             "Alarms",
             NotificationManager.IMPORTANCE_HIGH
         )
-        notificationChannel.description = "Notification Channel for Alarms"
+        notificationChannel.description = "Notification Channel for Daily Planner"
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(notificationChannel)
     }
     //Function for setting fragment
-    fun setFragment(fragment: Fragment){
+    private fun setFragment(fragment: Fragment){
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.flFragment, fragment)
             addToBackStack(null)
@@ -77,10 +80,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
     //Saving Arrays to Shared Preferences using Gson
-    fun saveArraysToSharedPref() {
+    private fun saveArraysToSharedPref() {
         val sharedPref = getSharedPreferences("sharedPref", MODE_PRIVATE)
         val editor = sharedPref.edit()
-        //val gson = Gson()
         val calendar: String = Gson().toJson(eventsList)
         val clock: String = Gson().toJson(alarmsList)
 
@@ -89,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         editor.apply()
     }
     //Getting Arrays from Shared Preferences using Gson
-    fun getArraysFromSharedPref() {
+    private fun getArraysFromSharedPref() {
         val sharedPref = getSharedPreferences("sharedPref", MODE_PRIVATE)
         val calendarList = sharedPref.getString("eventList", null)
         val clockList = sharedPref.getString("alarmList", null)
@@ -135,17 +137,5 @@ class MainActivity : AppCompatActivity() {
         Log.d("LIFECYCLE","onDestroy") //debugging
         saveArraysToSharedPref() //saving arrays to shared preferences when closing app
     }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        val snoozeFragment = SnoozeFragment()
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.flFragment, snoozeFragment)
-            addToBackStack(null)
-            commitAllowingStateLoss()
-        }
-        Toast.makeText(this, "Alarm Canceled!", Toast.LENGTH_SHORT).show()
-    }
-
 }
 

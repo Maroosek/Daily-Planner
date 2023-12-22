@@ -4,7 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context.ALARM_SERVICE
 import android.content.Intent
-import android.media.RingtoneManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -19,25 +18,17 @@ import android.widget.Toast
 import android.widget.ToggleButton
 import java.util.Calendar
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ClockFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ClockFragment : Fragment(R.layout.fragment_clock) {
 
-    var pendingIntent : PendingIntent? = null
-    var alarmManager : AlarmManager? = null
-    var addAlarmButton : Button? = null
-    var deleteAlarmButton : Button? = null
-    var editAlarmButton : Button? = null
-    var textLabel : TextView? = null
-    var alarmList : ListView? = null
-    var toggleButton : ToggleButton? = null
-    //var stopBtn : Button? = null
+    private var pendingIntent : PendingIntent? = null
+    private var alarmManager : AlarmManager? = null
+    private var addAlarmButton : Button? = null
+    private var deleteAlarmButton : Button? = null
+    private var editAlarmButton : Button? = null
+    private var textLabel : TextView? = null
+    private var alarmList : ListView? = null
+    private var toggleButton : ToggleButton? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,72 +46,32 @@ class ClockFragment : Fragment(R.layout.fragment_clock) {
         editAlarmButton = view.findViewById(R.id.editAlarmButton)
         textLabel = view.findViewById(R.id.debug)
         alarmList = view.findViewById(R.id.alarmList)
-        alarmManager = context?.getSystemService(ALARM_SERVICE) as AlarmManager
         toggleButton = view.findViewById(R.id.toggleBtn)
-        //stopBtn = view.findViewById(R.id.stopBtn)
+        alarmManager = context?.getSystemService(ALARM_SERVICE) as AlarmManager
+
         var selectedAlarm: Alarm? = null
 
         refreshList()
 
-        //addstatic() //debugging
-
-        alarmList?.onItemClickListener = object : AdapterView.OnItemClickListener {
-            override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                //Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show()//Debugging
-                Toast.makeText(context, "Selected: " +alarmsList[position].alarmTitle, Toast.LENGTH_SHORT).show()
-                selectedAlarm = null
-                selectedAlarm = alarmsList[position]
-                if (selectedAlarm != null) {
-                    if (selectedAlarm?.isActive == true)
-                    {
-                        toggleButton?.setChecked(false)
-                    }
-                    else
-                    {
-                        toggleButton?.setChecked(true)
-                    }
-                }
+        //lambda function for listview item click
+        alarmList?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            Toast.makeText(context, "Selected: " +alarmsList[position].alarmTitle, Toast.LENGTH_SHORT).show()
+            selectedAlarm = null
+            selectedAlarm = alarmsList[position]
+            if (selectedAlarm != null) {
+                //checking if alarm is active and setting toggle button accordingly
+                toggleButton?.isChecked = selectedAlarm?.isActive != true
             }
         }
-
-//        stopBtn?.setOnClickListener {
-//            if (selectedAlarm != null) {
-//                //val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-//                //alarmManager?.cancel(PendingIntent.getBroadcast(context, selectedAlarm!!.alarmID, Intent(context, AlarmReceiver::class.java), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
-//                //AlarmReceiver().stopSound(requireContext())
-//                //val alarmServiceIntent = Intent(context, AlarmService::class.java)
-//
-//
-////                val index = selectedAlarm!!.alarmID
-////                val alarmServiceIntent = Intent(context, MainActivity::class.java)
-////                alarmServiceIntent.putExtra("source", "clockFragment")
-////                alarmServiceIntent.putExtra("state", "stop")
-////                requireContext().startService(alarmServiceIntent)
-//
-////                val snoozeFragment = SnoozeFragment()
-////                val transaction = requireActivity().supportFragmentManager.beginTransaction()
-////                transaction.replace(R.id.flFragment, snoozeFragment)
-////                transaction.commit()
-//
-//                //val pendeing = PendingIntent.getBroadcast(requireContext(), index, alarmServiceIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-//                //Snooze()
-//
-//            }else
-//            {
-//                Toast.makeText(context, "No event selected", Toast.LENGTH_SHORT).show()
-//            }
-//        }
 
         toggleButton?.setOnClickListener {
             if (selectedAlarm != null) {
                 if (toggleButton?.isChecked == true){
-                    //toggleButton?.setChecked(false)//debugging
                     Toast.makeText(context, "Suspended: " +selectedAlarm?.alarmTitle, Toast.LENGTH_SHORT).show()//debugging
                     cancelRepeating(selectedAlarm!!)
                     selectedAlarm?.isActive = false
 
                 } else if (toggleButton?.isChecked == false){
-                    //toggleButton?.setChecked(true)//debugging
                     Toast.makeText(context,"Set: " +selectedAlarm?.alarmTitle,Toast.LENGTH_SHORT).show()//debugging
                     selectedAlarm?.isActive = true
                     setAlarm(selectedAlarm!!)
@@ -136,14 +87,11 @@ class ClockFragment : Fragment(R.layout.fragment_clock) {
         }
 
         addAlarmButton?.setOnClickListener {
-
             val clockFragmentAlarm = ClockFragmentAlarm()
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.flFragment, clockFragmentAlarm)
-            //transaction.addToBackStack(null)
             transaction.commit()
             refreshList()
-
         }
 
         deleteAlarmButton?.setOnClickListener {
@@ -156,7 +104,6 @@ class ClockFragment : Fragment(R.layout.fragment_clock) {
             {
                 Toast.makeText(context, "No alarm selected", Toast.LENGTH_SHORT).show()
             }
-
             refreshList()
         }
 
@@ -172,7 +119,6 @@ class ClockFragment : Fragment(R.layout.fragment_clock) {
 
                 val transaction = requireActivity().supportFragmentManager.beginTransaction()
                 transaction.replace(R.id.flFragment, clockFragmentAlarm)
-                //transaction.addToBackStack(null)
                 transaction.commit()
             }
             else
@@ -182,15 +128,18 @@ class ClockFragment : Fragment(R.layout.fragment_clock) {
         }
     }
 
-    fun refreshList() {
-        var adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1,
-            alarmsList.map { it.alarmTitle+ " " + it.alarmTime + " " + if (it.monday == true){"Monday"}else {""} +
+    private fun refreshList() {
+        val alarmsList = alarmsList.sortedBy { it.alarmTime } //sorting alarms by time ascending
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1,
+            alarmsList.map {if (it.isActive) {"Active"}else {"Inactive"} + ", " +
+                    it.alarmTitle+ ", " + it.alarmTime + " " + if (it.monday == true){"Monday"}else {""} +
                     " " + if (it.tuesday == true){"Tuesday"}else {""}+ " " + if (it.wednesday == true){"Wednesday"}else {""} +
                     " " + if (it.thursday == true){"Thursday"}else {""}+ " " + if (it.friday == true){"Friday"}else {""} +
                     " " + if (it.saturday == true){"Saturday"}else {""}+ " " + if (it.sunday == true){"Sunday"}else {""}} )
+
         alarmList?.adapter = adapter
         }
-    fun setAlarm(selectedAlarm: Alarm){
+    private fun setAlarm(selectedAlarm: Alarm){
         val index = selectedAlarm.alarmID
         setSingleAlarm(selectedAlarm)
         if (selectedAlarm.monday == true) {
@@ -216,36 +165,42 @@ class ClockFragment : Fragment(R.layout.fragment_clock) {
         }
 
     }
-    fun setRepeating(selectedAlarm: Alarm, day: Int){
-        var calendar = Calendar.getInstance()
+    private fun setRepeating(selectedAlarm: Alarm, day: Int){
+        val calendar = Calendar.getInstance()
         calendar[Calendar.HOUR_OF_DAY] = selectedAlarm.alarmTime.split(":")[0].toInt()
         calendar[Calendar.MINUTE] = selectedAlarm.alarmTime.split(":")[1].toInt()
+        calendar[Calendar.SECOND] = 0
         calendar[Calendar.DAY_OF_WEEK] = selectedAlarm.alarmID - day
+
         val intent = Intent(context,AlarmReceiver::class.java)
         intent.putExtra("alarmName", selectedAlarm.alarmTitle)
         intent.putExtra("source", "clockFragment")
         intent.putExtra("alarmID", day)
         intent.putExtra("state", "play")
+
         pendingIntent = PendingIntent.getBroadcast(context, day, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         alarmManager!!.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY * 7, pendingIntent)
     }
-    fun setSingleAlarm(selectedAlarm: Alarm){
-        var calendar = Calendar.getInstance()
+    private fun setSingleAlarm(selectedAlarm: Alarm){
+        val calendar = Calendar.getInstance()
         calendar[Calendar.HOUR_OF_DAY] = selectedAlarm.alarmTime.split(":")[0].toInt()
         calendar[Calendar.MINUTE] = selectedAlarm.alarmTime.split(":")[1].toInt()
+        calendar[Calendar.SECOND] = 0
         if (calendar.timeInMillis <= System.currentTimeMillis()) { //If alarm is set for tomorrow
             calendar.add(Calendar.DATE, 1)
         }
+
         val intent = Intent(context,AlarmReceiver::class.java)
         intent.putExtra("alarmName", selectedAlarm.alarmTitle)
         intent.putExtra("source", "clockFragment")
         intent.putExtra("alarmID", selectedAlarm.alarmID)
         intent.putExtra("state", "play")
+
         pendingIntent = PendingIntent.getBroadcast(context, selectedAlarm.alarmID, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         alarmManager!!.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
 
     }
-    fun cancelRepeating(selectedAlarm: Alarm) {
+    private fun cancelRepeating(selectedAlarm: Alarm) {
         val index = selectedAlarm.alarmID
         cancelAlarm(index)
         if (selectedAlarm.monday == true) {
@@ -270,21 +225,10 @@ class ClockFragment : Fragment(R.layout.fragment_clock) {
             cancelAlarm(index - 1)
         }
     }
-    fun cancelAlarm(index: Int){
+    private fun cancelAlarm(index: Int){
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         alarmManager?.cancel(PendingIntent.getBroadcast(requireContext(), index, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT))
     }
-//    fun Snooze(){
-//        //Sets default alarm sound
-//        var alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-////        //If there is no default alarm sound, sets default notification sound
-//        if (alarmSound == null) {
-//            alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-//        }
-//        val ringtone = RingtoneManager.getRingtone(context, alarmSound)
-//
-//        ringtone.play()
-//    }
 
 }
 
