@@ -15,16 +15,13 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textSize="35sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_gravity="center" />
 
     <NumberPicker
         android:id="@+id/numberPicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"/>
+        android:layout_marginStart="40dp"/>
 
 
     <LinearLayout
@@ -32,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="120dp">
+        android:layout_marginTop="50dp">
 
         <Button
             android:id="@+id/snoozeButton"
@@ -44,7 +41,7 @@
 
         <Button
             android:id="@+id/cancelSnoozeButton"
-            android:text="Stop"
+            android:text="Cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"

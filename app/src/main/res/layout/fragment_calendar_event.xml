@@ -13,12 +13,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:textSize="35dp"
+        android:textSize="35sp"
         android:text="Calendar Event"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_gravity="center"/>
 
     <EditText
         android:id="@+id/eventName"
@@ -39,29 +36,30 @@
         android:id="@+id/daySelection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="35dp"
-        android:text="Selected day" />
+        android:textSize="35sp"
+        android:text="Selected day"
+        android:layout_gravity="center"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/eventsOperations"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
 
         <Button
             android:id="@+id/cancelEventButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cancel"
-            android:layout_marginHorizontal="20dp"/>
+            android:layout_marginHorizontal="40dp"/>
 
         <Button
             android:id="@+id/submitEventButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:text="Save"
-            android:layout_marginHorizontal="20dp"/>
+            android:layout_marginHorizontal="40dp"/>
     </LinearLayout>
 
 

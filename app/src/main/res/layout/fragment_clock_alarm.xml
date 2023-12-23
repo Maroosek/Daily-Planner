@@ -12,13 +12,9 @@
         android:id="@+id/fragmentClockText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Clock"
-        android:textAlignment="center"
-        android:textSize="35dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toggleBtn" />
+        android:text="Add Alarm"
+        android:textSize="35sp"
+        android:layout_gravity="center" />
 
     <TimePicker
         android:id="@+id/alarmTimePicker"
@@ -43,49 +39,57 @@
         android:id="@+id/alarmOptions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        >
 
         <CheckBox
             android:id="@+id/alarmCheckMon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pon"/>
+            android:text="M"
+            android:textSize="12sp"/>
 
         <CheckBox
             android:id="@+id/alarmCheckTue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Wt"/>
+            android:text="Tue"
+            android:textSize="12sp"/>
 
         <CheckBox
             android:id="@+id/alarmCheckWed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sr"/>
+            android:text="W"
+            android:textSize="12sp"/>
 
         <CheckBox
             android:id="@+id/alarmCheckThu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Czw"/>
+            android:text="Thu"
+            android:textSize="12sp"/>
 
         <CheckBox
             android:id="@+id/alarmCheckFri"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pt"/>
+            android:text="F"
+            android:textSize="12sp"/>
 
         <CheckBox
             android:id="@+id/alarmCheckSat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sb"/>
+            android:text="Sat"
+            android:textSize="12sp"/>
 
         <CheckBox
             android:id="@+id/alarmCheckSun"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nd"/>
+            android:text="Sun"
+            android:textSize="12sp"/>
 
     </LinearLayout>
     <LinearLayout
@@ -99,14 +103,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cancel"
-            android:layout_marginHorizontal="20dp" />
+            android:layout_marginHorizontal="40dp" />
 
         <Button
             android:id="@+id/addAlarmButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add"
-            android:layout_marginHorizontal="20dp" />
+            android:layout_marginHorizontal="40dp" />
 
     </LinearLayout>
 

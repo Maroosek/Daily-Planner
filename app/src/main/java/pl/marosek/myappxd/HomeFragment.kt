@@ -17,6 +17,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private var todayEvents : ListView? = null
     private var activeAlarms : ListView? = null
     private var helpButton : Button? = null
+    private var snoozeButton : Button? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,6 +32,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         todayEvents = view.findViewById(R.id.todayEvents)
         activeAlarms = view.findViewById(R.id.activeAlarms)
         helpButton = view.findViewById(R.id.helpButton)
+        snoozeButton = view.findViewById(R.id.snoozeButton)
 
         //Setting current date for todayEvents
         val currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("d-M-yyyy"))
@@ -41,8 +43,20 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         helpButton?.setOnClickListener {
             helpButton()
         }
+        snoozeButton?.setOnClickListener {
+            setFragment()
+        }
 
     }
+
+    private fun setFragment() {
+        val snoozeFragment = SnoozeFragment()
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.flFragment, snoozeFragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
     private fun todayEventList(selectedDate: String) {
         val filtered = eventsList.filter { it.eventDate == selectedDate }.sortedBy { it.eventTime } //filtering events by date
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1,
@@ -62,7 +76,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val clock = "Clock controls:" +
                 "\n - To add a new alarm tap '+' on right side of screen" +
                 "\n - Set time and days in which clock should set alarm" +
-                "\n - If no day was selected clock will alarm one time on nearest occasion" +
+                "\n - If no day was selected alarm will fire only once" +
                 "\n - Turn ON/OFF alarm by selecting one from list and click toggle button" +
                 "\n - Delete alarm by selecting one from list and tap '-' on left side of screen" +
                 "\n - Edit alarm by selecting one from list and tap 'Edit' option" +
@@ -75,8 +89,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val snooze = "Snooze controls:" +
                 "\n - Snooze will appear as notification on alarm trigger time" +
                 "\n - Click alarm notification to enter snooze screen" +
-                "\n - You can set snooze time you desire or exit snooze screen" +
-                "\n !Remember to save snooze time before exiting!"
+                "\n - You can set snooze time you desire or exit snooze screen"
 
         AlertDialog.Builder(requireContext())
             .setTitle("Snooze")

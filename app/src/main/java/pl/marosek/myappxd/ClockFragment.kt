@@ -16,6 +16,7 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ToggleButton
+import androidx.appcompat.widget.SwitchCompat
 import java.util.Calendar
 
 class ClockFragment : Fragment(R.layout.fragment_clock) {
@@ -26,8 +27,9 @@ class ClockFragment : Fragment(R.layout.fragment_clock) {
     private var deleteAlarmButton : Button? = null
     private var editAlarmButton : Button? = null
     private var textLabel : TextView? = null
+    private var clockName : TextView? = null
     private var alarmList : ListView? = null
-    private var toggleButton : ToggleButton? = null
+    private var toggleButton : SwitchCompat? = null
 
 
     override fun onCreateView(
@@ -45,9 +47,13 @@ class ClockFragment : Fragment(R.layout.fragment_clock) {
         deleteAlarmButton = view.findViewById(R.id.deleteAlarmButton)
         editAlarmButton = view.findViewById(R.id.editAlarmButton)
         textLabel = view.findViewById(R.id.debug)
+        clockName = view.findViewById(R.id.clockName)
         alarmList = view.findViewById(R.id.alarmList)
         toggleButton = view.findViewById(R.id.toggleBtn)
         alarmManager = context?.getSystemService(ALARM_SERVICE) as AlarmManager
+
+        clockName?.visibility = View.INVISIBLE
+        toggleButton?.visibility = View.INVISIBLE
 
         var selectedAlarm: Alarm? = null
 
@@ -58,20 +64,23 @@ class ClockFragment : Fragment(R.layout.fragment_clock) {
             Toast.makeText(context, "Selected: " +alarmsList[position].alarmTitle, Toast.LENGTH_SHORT).show()
             selectedAlarm = null
             selectedAlarm = alarmsList[position]
+            clockName?.visibility = View.VISIBLE
+            clockName?.text = selectedAlarm?.alarmTitle
+            toggleButton?.visibility = View.VISIBLE
             if (selectedAlarm != null) {
                 //checking if alarm is active and setting toggle button accordingly
-                toggleButton?.isChecked = selectedAlarm?.isActive != true
+                toggleButton?.isChecked = selectedAlarm?.isActive != false
             }
         }
 
         toggleButton?.setOnClickListener {
             if (selectedAlarm != null) {
-                if (toggleButton?.isChecked == true){
+                if (toggleButton?.isChecked == false){
                     Toast.makeText(context, "Suspended: " +selectedAlarm?.alarmTitle, Toast.LENGTH_SHORT).show()//debugging
                     cancelRepeating(selectedAlarm!!)
                     selectedAlarm?.isActive = false
 
-                } else if (toggleButton?.isChecked == false){
+                } else if (toggleButton?.isChecked == true){
                     Toast.makeText(context,"Set: " +selectedAlarm?.alarmTitle,Toast.LENGTH_SHORT).show()//debugging
                     selectedAlarm?.isActive = true
                     setAlarm(selectedAlarm!!)

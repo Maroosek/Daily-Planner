@@ -32,7 +32,7 @@ class AlarmReceiver : BroadcastReceiver() {
         //NOTIFICATION
         val manager = context!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notification = NotificationCompat.Builder(context, notificationChannelID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_launcher_foreground) // custom icon
             .setContentTitle(title)
             .setContentText("[Set Snooze] $notifDescription")
             .setAutoCancel(true)//closes notification after clicking on it
@@ -51,10 +51,9 @@ class AlarmReceiver : BroadcastReceiver() {
         //NOTIFICATION
         val manager = context!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notification = NotificationCompat.Builder(context, notificationChannelID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_launcher_foreground) // custom icon
             .setContentTitle(title)
             .setContentText(notifDescription)
-            .setAutoCancel(true)//closes notification after clicking on it
             .setPriority(NotificationCompat.PRIORITY_MAX) //Used for heads-up notification and wake up
             //.setSound(alarmSound) //No need for sound, otherwise it will replace device notofication sound
             .build()

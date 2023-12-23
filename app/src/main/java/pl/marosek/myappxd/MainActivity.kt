@@ -118,13 +118,13 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         Log.d("LIFECYCLE","onPause") //debugging
-        //saveArraysToSharedPref()
+        saveArraysToSharedPref()
     }
 
     override fun onStop() {
         super.onStop()
         Log.d("LIFECYCLE","onStop") //debugging
-        //saveArraysToSharedPref()
+        saveArraysToSharedPref()
     }
 
     override fun onRestart() {
