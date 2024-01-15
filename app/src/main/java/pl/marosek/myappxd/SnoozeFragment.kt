@@ -43,7 +43,7 @@ class SnoozeFragment : Fragment(R.layout.fragment_snooze){
         var time = numberPicker?.value
 
         numberPicker?.setOnValueChangedListener { picker, oldVal, newVal ->
-            time = numberPicker?.value
+            time = newVal
         }
 
         //Sets default alarm sound

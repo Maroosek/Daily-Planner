@@ -64,13 +64,14 @@ class CalendarFragmentEvent : Fragment(R.layout.fragment_calendar_event) {
             eventTime!!.minute = eventsList[index].eventTime.split(":")[1].toInt()
             textLabel?.setText("Selected date is ${eventsList[index].eventDate}")
             eventDate = eventsList[index].eventDate
-            cancelEvent(index)
+
         }
 
         submitButton?.setOnClickListener {
             val eventName = eventTitle?.text.toString() //works
             val eventDate = eventDate.toString()
             if (eventIndex != null) {
+                cancelEvent(eventIndex.toInt())
                 eventsList.removeAt(eventIndex.toInt())
             }
             addEvent(eventID, eventName, selectedTime, eventDate)
